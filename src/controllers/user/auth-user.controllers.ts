@@ -4,14 +4,22 @@ import { IAuthUserService } from "../../interfaces/services/auth-user.service.in
 import { LoginDto } from "../../dtos/shared/login.dto";
 import { MESSAGES } from "../../config/constants/messages";
 import { STATUS_CODES } from "../../config/constants/status-code";
+import { TYPES } from "../../config/inversify/inversify.types"; 
+import { injectable, inject } from "inversify";
+@injectable()
 export class AuthUserController {
-  constructor(private authUserService: IAuthUserService) {}
+  constructor(
+    @inject(TYPES.AuthUserService) private _authUserService: IAuthUserService
+  ) {}
+
   async register(req: Request, res: Response, next: NextFunction) {
     try {
       const userData: UserRegisterDTO = req.body;
 
-      await this.authUserService.registerUser(userData);
-      res.status(STATUS_CODES.CREATED).json({ message: MESSAGES.REGISTRATION_SUCCESS });
+      await this._authUserService.registerUser(userData);
+      res
+        .status(STATUS_CODES.CREATED)
+        .json({ message: MESSAGES.REGISTRATION_SUCCESS });
     } catch (error: any) {
       next(error);
     }
@@ -20,7 +28,7 @@ export class AuthUserController {
   async generateOtp(req: Request, res: Response, next: NextFunction) {
     try {
       const email: string = req.body.email;
-      await this.authUserService.generateOtp(email);
+      await this._authUserService.generateOtp(email);
       res
         .status(STATUS_CODES.CREATED)
         .json({ success: true, message: MESSAGES.OTP_SENT });
@@ -30,11 +38,11 @@ export class AuthUserController {
   }
   async verifyOtp(req: Request, res: Response, next: NextFunction) {
     try {
-      await this.authUserService.verifyOtp(req.body);
+      await this._authUserService.verifyOtp(req.body);
 
       res
         .status(STATUS_CODES.OK)
-        .json({ success: true, message:MESSAGES.OTP_VERIFIED });
+        .json({ success: true, message: MESSAGES.OTP_VERIFIED });
     } catch (error) {
       next(error);
     }
@@ -42,7 +50,7 @@ export class AuthUserController {
   async login(req: Request, res: Response, next: NextFunction) {
     try {
       const loginCredential: LoginDto = req.body;
-      const { refreshToken, accessToken } = await this.authUserService.login(
+      const { refreshToken, accessToken } = await this._authUserService.login(
         loginCredential
       );
 
@@ -65,7 +73,7 @@ export class AuthUserController {
         res.status(STATUS_CODES.BAD_REQUEST).json("no refresh token available");
         return;
       }
-      const accessToken: string = await this.authUserService.refreshToken(
+      const accessToken: string = await this._authUserService.refreshToken(
         refreshToken
       );
       res
@@ -79,7 +87,7 @@ export class AuthUserController {
     try {
       const googleToken: string = req.body.token;
       const { refreshToken, accessToken } =
-        await this.authUserService.googleLogin(googleToken);
+        await this._authUserService.googleLogin(googleToken);
       res.cookie("userRefreshToken", refreshToken, {
         httpOnly: true,
         secure: false,
@@ -95,7 +103,7 @@ export class AuthUserController {
   async forgotPassword(req: Request, res: Response, next: NextFunction) {
     try {
       const email: string = req.body.email;
-      await this.authUserService.forgotPassword(email);
+      await this._authUserService.forgotPassword(email);
       res
         .status(STATUS_CODES.CREATED)
         .json({ success: true, message: MESSAGES.PASSWORD_RESET_SENT });
@@ -105,10 +113,8 @@ export class AuthUserController {
   }
   async resetPassword(req: Request, res: Response, next: NextFunction) {
     try {
-     
-      
-      const {token,password}= req.body;
-      await this.authUserService.resetPassword(token,password)
+      const { token, password } = req.body;
+      await this._authUserService.resetPassword(token, password);
       res
         .status(STATUS_CODES.CREATED)
         .json({ success: true, message: MESSAGES.PASSWORD_RESET_SUCCESS });
@@ -116,17 +122,16 @@ export class AuthUserController {
       next(error);
     }
   }
-   async logout(req: Request, res: Response, next: NextFunction) {
+  async logout(req: Request, res: Response, next: NextFunction) {
     try {
-     
-        res.clearCookie("userRefreshToken", {
-          httpOnly: true,
-          secure: false,
-        });
-         res.status(STATUS_CODES.OK).json({
-           success: true,
-           message: MESSAGES.LOGOUT_SUCCESS,
-         });
+      res.clearCookie("userRefreshToken", {
+        httpOnly: true,
+        secure: false,
+      });
+      res.status(STATUS_CODES.OK).json({
+        success: true,
+        message: MESSAGES.LOGOUT_SUCCESS,
+      });
     } catch (error) {
       next(error);
     }

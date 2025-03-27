@@ -1,19 +1,21 @@
-import { UserRegisterDTO } from "../../dtos/user/auth/user-register.dto";
-import { IUserRepository } from "../../interfaces/repositories/user.repository.interface";
-import { UserModel, IUser } from "../../models/user.model";
+import { IUserRepository } from "../interfaces/repositories/user.repository.interface";
+import { UserModel, IUser } from "../models/user.model";
+import {  injectable } from "inversify";
+import { BaseRepository } from "./base.repository";
 
-export class UserRepository implements IUserRepository {
-  async createUser(userData: UserRegisterDTO): Promise<IUser> {
-    const user = new UserModel(userData);
-    return await user.save();
+@injectable()
+export class UserRepository
+  extends BaseRepository<IUser>
+  implements IUserRepository
+{
+  constructor() {
+    super(UserModel);
   }
 
   async findByEmail(email: string): Promise<IUser | null> {
     return await UserModel.findOne({ email });
   }
-  async findById(_id: string): Promise<IUser | null> {
-    return await UserModel.findById({ _id });
-  }
+
   async updatePassword(
     email: string,
     hashedPassword: string
@@ -21,16 +23,6 @@ export class UserRepository implements IUserRepository {
     return await UserModel.findOneAndUpdate(
       { email },
       { $set: { password: hashedPassword } }
-    );
-  }
-  async updateUser(
-    _id: string,
-    updateData: Partial<IUser>
-  ): Promise<IUser | null> {
-    return await UserModel.findByIdAndUpdate(
-      _id,
-      { $set: updateData },
-      { new: true, runValidators: true }
     );
   }
 

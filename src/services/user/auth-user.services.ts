@@ -14,29 +14,22 @@ import { OAuth2Client } from "google-auth-library";
 import { error } from "console";
 import { MESSAGES } from "../../config/constants/messages";
 import { STATUS_CODES } from "../../config/constants/status-code";
+import { injectable, inject } from "inversify";
+import { TYPES } from "../../config/inversify/inversify.types";
+import { UserMapper } from "../../utils/mappers/user-mapper";
+@injectable()
 export class AuthUserService implements IAuthUserService {
-  private userRepository: IUserRepository;
-  private otpRepository: IOtpRepository;
-  private passwordService: IPasswordService;
-  private emailService: IEmailService;
-  private jwtService: IJwtService;
   constructor(
-    userRepository: IUserRepository,
-    otpRepository: IOtpRepository,
-    passwordService: IPasswordService,
-    emailService: IEmailService,
-    jwtService: IJwtService
-  ) {
-    this.userRepository = userRepository;
-    this.otpRepository = otpRepository;
-    this.passwordService = passwordService;
-    this.emailService = emailService;
-    this.jwtService = jwtService;
-  }
+    @inject(TYPES.UserRepository) private _userRepository: IUserRepository,
+    @inject(TYPES.OtpRepository) private _otpRepository: IOtpRepository,
+    @inject(TYPES.PasswordService) private _passwordService: IPasswordService,
+    @inject(TYPES.EmailService) private _emailService: IEmailService,
+    @inject(TYPES.JwtService) private _jwtService: IJwtService
+  ) {}
   async registerUser(
     userData: Omit<UserRegisterDTO, "customerId">
   ): Promise<IUser> {
-    const existingUser = await this.userRepository.findByEmail(userData.email);
+    const existingUser = await this._userRepository.findByEmail(userData.email);
     if (existingUser) {
       throw new CustomError("Email already exists", STATUS_CODES.CONFLICT);
     }
@@ -46,7 +39,7 @@ export class AuthUserService implements IAuthUserService {
         STATUS_CODES.UNAUTHORIZED
       );
     }
-    userData.password = await this.passwordService.hashPassword(
+    userData.password = await this._passwordService.hashPassword(
       userData.password
     );
     const UserData: UserRegisterDTO = {
@@ -54,25 +47,25 @@ export class AuthUserService implements IAuthUserService {
       customerId: Math.random().toString(36).substring(2, 9),
     };
 
-    return await this.userRepository.createUser(UserData);
+    return await this._userRepository.create(UserData);
   }
   // to generate and sent the otp
   async generateOtp(email: string): Promise<IOtp> {
     const otp: number = Math.floor(1000 + Math.random() * 9000);
     const expireAt: Date = new Date(Date.now() + 2 * 60 * 1000);
-    const otpdata: OtpGenerationDTO = {
+    const otpdata:Partial <IOtp> = {
       email,
-      otp,
+      otp: String(otp),
       expireAt,
     };
-    const content: string = this.emailService.generateOtpEmailContent(otp);
+    const content: string = this._emailService.generateOtpEmailContent(otp);
     const subject: string = "OTP Verification";
 
-    await this.emailService.sendEmail(email, subject, content);
-    return await this.otpRepository.createOtp(otpdata);
+    await this._emailService.sendEmail(email, subject, content);
+    return await this._otpRepository.create(otpdata);
   }
   async verifyOtp(otpData: Omit<OtpGenerationDTO, "expireAt">): Promise<void> {
-    const data: IOtp | null = await this.otpRepository.findOtp(otpData.email);
+    const data: IOtp | null = await this._otpRepository.findOtp(otpData.email);
 
     if (!data) {
       throw new CustomError(MESSAGES.OTP_INVALID, STATUS_CODES.UNAUTHORIZED);
@@ -80,7 +73,7 @@ export class AuthUserService implements IAuthUserService {
     const currentTime = new Date();
     const otpExpiryTime = new Date(data.expireAt);
 
-    const user: IUser | null = await this.userRepository.findByEmail(
+    const user: IUser | null = await this._userRepository.findByEmail(
       otpData.email
     );
     if (user) {
@@ -97,7 +90,7 @@ export class AuthUserService implements IAuthUserService {
   async login(
     userCredential: LoginDto
   ): Promise<{ accessToken: string; refreshToken: string }> {
-    const userData: IUser | null = await this.userRepository.findByEmail(
+    const userData: IUser | null = await this._userRepository.findByEmail(
       userCredential.email
     );
 
@@ -114,28 +107,32 @@ export class AuthUserService implements IAuthUserService {
       );
     }
 
-    const isPasswordValid: boolean = await this.passwordService.comparePassword(
-      userCredential.password,
-      userData.password
-    );
+    const isPasswordValid: boolean =
+      await this._passwordService.comparePassword(
+        userCredential.password,
+        userData.password
+      );
     if (!isPasswordValid) {
-      throw new CustomError(MESSAGES.INVALID_CREDENTIALS, STATUS_CODES.UNAUTHORIZED);
+      throw new CustomError(
+        MESSAGES.INVALID_CREDENTIALS,
+        STATUS_CODES.UNAUTHORIZED
+      );
     }
-    
-    const accessToken = this.jwtService.generateAccessToken(userData._id);
-    const refreshToken = this.jwtService.generateRefreshToken(userData._id);
+
+    const accessToken = this._jwtService.generateAccessToken(userData._id);
+    const refreshToken = this._jwtService.generateRefreshToken(userData._id);
 
     return { accessToken, refreshToken };
   }
   async refreshToken(refreshToken: string): Promise<string> {
-    const userId: string | null = this.jwtService.verifyToken(
+    const userId: string | null = this._jwtService.verifyToken(
       refreshToken,
       "refresh"
     );
     if (!userId) {
       throw new CustomError("refresh token is not valid", 400);
     }
-    return this.jwtService.generateAccessToken(userId);
+    return this._jwtService.generateAccessToken(userId);
   }
   async googleLogin(
     googleToken: string
@@ -151,7 +148,7 @@ export class AuthUserService implements IAuthUserService {
     }
     const { email, name } = payload;
 
-    let user: IUser | null = await this.userRepository.findByEmail(email);
+    let user: IUser | null = await this._userRepository.findByEmail(email);
 
     if (!user) {
       const UserData: UserRegisterDTO = {
@@ -159,38 +156,40 @@ export class AuthUserService implements IAuthUserService {
         name: name,
         customerId: Math.random().toString(36).substring(2, 9),
       };
-      user = await this.userRepository.createUser(UserData);
+       const userModel = UserMapper.toRegistrationModel(UserData);
+      user = await this._userRepository.create(userModel);
     }
 
-    const accessToken = this.jwtService.generateAccessToken(user._id);
-    const refreshToken = this.jwtService.generateRefreshToken(user._id);
+    const accessToken = this._jwtService.generateAccessToken(user._id);
+    const refreshToken = this._jwtService.generateRefreshToken(user._id);
 
     return { accessToken, refreshToken };
   }
- async  forgotPassword(email:string):Promise<void>{
-   const user=await this.userRepository.findByEmail(email)
-   
-   
-   if (!user) {
-    throw new CustomError(MESSAGES.RESOURCE_NOT_FOUND, STATUS_CODES.NOT_FOUND);
-   }
-   const token=this.jwtService.generateAccessToken(email)
-   const  resetLink=process.env.FRONTEND_URI+'/reset-password/'+token
-   const content = this.emailService.generateResetPasswordEmailContent(resetLink)
-     await this.emailService.sendEmail(email,'Reset Password',content)
+  async forgotPassword(email: string): Promise<void> {
+    const user = await this._userRepository.findByEmail(email);
 
- }
- async resetPassword(token:string,password:string):Promise<void>{
-
-
-
-    const email = await this.jwtService.verifyToken(token, "access");
-    const user=await this.userRepository.findByEmail(email)
     if (!user) {
-      throw new CustomError(MESSAGES.RESOURCE_NOT_FOUND, STATUS_CODES.NOT_FOUND)
+      throw new CustomError(
+        MESSAGES.RESOURCE_NOT_FOUND,
+        STATUS_CODES.NOT_FOUND
+      );
     }
-    const hashedPassword=await this.passwordService.hashPassword(password)
-     await this.userRepository.updatePassword(email,hashedPassword)
-
- }
+    const token = this._jwtService.generateAccessToken(email);
+    const resetLink = process.env.FRONTEND_URI + "/reset-password/" + token;
+    const content =
+      this._emailService.generateResetPasswordEmailContent(resetLink);
+    await this._emailService.sendEmail(email, "Reset Password", content);
+  }
+  async resetPassword(token: string, password: string): Promise<void> {
+    const email = await this._jwtService.verifyToken(token, "access");
+    const user = await this._userRepository.findByEmail(email);
+    if (!user) {
+      throw new CustomError(
+        MESSAGES.RESOURCE_NOT_FOUND,
+        STATUS_CODES.NOT_FOUND
+      );
+    }
+    const hashedPassword = await this._passwordService.hashPassword(password);
+    await this._userRepository.updatePassword(email, hashedPassword);
+  }
 }

@@ -8,4 +8,6 @@ export interface UploadedFile {
 
 export interface IUploadToS3 {
   upload(file: UploadedFile): Promise<string>;
+  getSignedUrl(fileKey: string, expiresIn: number): Promise<string>;
+  delete(fileKey: string): Promise<void>;
 }

@@ -1,5 +1,5 @@
-import { OtpRepository } from "../repositories/user/otp.repository";
-import { UserRepository } from "../repositories/user/user.repository";
+import { OtpRepository } from "../repositories/otp.repository";
+import { UserRepository } from "../repositories/user.repository";
 import { AuthUserService } from "../services/user/auth-user.services";
 import {  PasswordService } from "../services/helpers/password-hash.services";
 import { EmailService } from "../services/helpers/email.services";

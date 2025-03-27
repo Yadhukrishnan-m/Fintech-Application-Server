@@ -1,11 +1,19 @@
 import { MESSAGES } from "../../config/constants/messages";
 import { STATUS_CODES } from "../../config/constants/status-code";
+import { redisClient } from "../../config/redis";
+import { IUploadToS3 } from "../../interfaces/helpers/file-upload.interface";
 import { IUserRepository } from "../../interfaces/repositories/user.repository.interface";
 import { IUserManagementService } from "../../interfaces/services/user-management.service.interface";
 import { IUser } from "../../models/user.model";
 import { CustomError } from "../../utils/custom-error";
+import { injectable, inject } from "inversify";
+import { TYPES } from "../../config/inversify/inversify.types";
+@injectable()
 export class UserManagementService implements IUserManagementService {
-  constructor(private userRepository: IUserRepository) {}
+  constructor(
+    @inject(TYPES.UserRepository) private _userRepository: IUserRepository,
+    @inject(TYPES.UploadToS3) private _uploadToS3: IUploadToS3
+  ) {}
 
   async getUnverifiedUsers(
     page: number,
@@ -18,7 +26,6 @@ export class UserManagementService implements IUserManagementService {
 
     const query: any = { status: "completed" };
 
-    // Search by Name, Email, or Customer ID
     if (search) {
       query.$or = [
         { name: { $regex: search, $options: "i" } },
@@ -27,24 +34,22 @@ export class UserManagementService implements IUserManagementService {
       ];
     }
 
-    // Filter by CIBIL Score Range
     if (filter) {
       const [min, max] = filter.split("-").map(Number);
 
-      // ✅ Ensure values are valid numbers
       if (!isNaN(min) && !isNaN(max)) {
         query.cibilScore = { $gte: min, $lte: max };
       }
     }
 
-    // Sorting Logic
+
     let sortCriteria = {};
     if (sortBy === "cibil_desc") sortCriteria = { cibilScore: -1 };
     else if (sortBy === "cibil_asc") sortCriteria = { cibilScore: 1 };
     else if (sortBy === "newest") sortCriteria = { createdAt: -1 };
     else if (sortBy === "oldest") sortCriteria = { createdAt: 1 };
 
-    return await this.userRepository.fetchUnverifiedUsers(
+    return await this._userRepository.fetchUnverifiedUsers(
       query,
       sortCriteria,
       limit,
@@ -53,21 +58,40 @@ export class UserManagementService implements IUserManagementService {
   }
 
   async getUserById(id: string): Promise<IUser> {
-    const user = await this.userRepository.findById(id);
-    if (!user) {
+    const userData = await this._userRepository.findById(id);
+    if (
+      !userData ||
+      !userData.aadhaarDoc ||
+      !userData.panDoc ||
+      !userData.cibilDoc
+    ) {
       throw new CustomError(MESSAGES.USER_NOT_FOUND, STATUS_CODES.NOT_FOUND);
     }
-    return user;
+    const user = userData.toObject();
+    const expiresIn = 300;
+    const getSignedUrlWithCache = async (fileKey: string): Promise<string> => {
+      let signedUrl = await redisClient.get(fileKey);
+      if (!signedUrl) {
+        signedUrl = await this._uploadToS3.getSignedUrl(fileKey, expiresIn);
+        await redisClient.set(fileKey, signedUrl, { EX: expiresIn });
+      }
+      return signedUrl;
+    };
+    const aadhaarDoc = await getSignedUrlWithCache(user.aadhaarDoc);
+    const panDoc = await getSignedUrlWithCache(user.panDoc);
+    const cibilDoc = await getSignedUrlWithCache(user.cibilDoc);
+    const updatedUser = { ...user, aadhaarDoc, panDoc, cibilDoc };
+    return updatedUser;
   }
   async verifyUser(id: string, userstatus: boolean): Promise<void> {
     if (userstatus) {
-      const user = await this.userRepository.findById(id);
+      const user = await this._userRepository.findById(id);
       if (!user || !user.aadhaarNumber || !user.panNumber) {
         throw new CustomError(MESSAGES.USER_NOT_FOUND, STATUS_CODES.NOT_FOUND);
       }
 
       const existingUserWithAadhaar =
-        await this.userRepository.findByAadhaarNumber(user.aadhaarNumber);
+        await this._userRepository.findByAadhaarNumber(user.aadhaarNumber);
       if (
         existingUserWithAadhaar &&
         existingUserWithAadhaar.status === "verified"
@@ -77,7 +101,7 @@ export class UserManagementService implements IUserManagementService {
           409
         );
       }
-      const existingUserWithPan = await this.userRepository.findByPanNumber(
+      const existingUserWithPan = await this._userRepository.findByPanNumber(
         user.panNumber
       );
       if (existingUserWithPan && existingUserWithPan.status === "verified") {
@@ -91,15 +115,13 @@ export class UserManagementService implements IUserManagementService {
     const userData = {
       status: userstatus ? "verified" : "rejected",
     };
-    await this.userRepository.updateUser(id, userData);
+    await this._userRepository.updateById(id, userData);
   }
   async blacklistUser(id: string, action: boolean): Promise<void> {
- 
-
     const userData = {
       isBlacklisted: action,
     };
-    await this.userRepository.updateUser(id, userData);
+    await this._userRepository.updateById(id, userData);
   }
 
   async getVerifiedUsers(
@@ -113,7 +135,6 @@ export class UserManagementService implements IUserManagementService {
 
     const query: any = { status: "verified" };
 
-   
     if (search) {
       query.$or = [
         { name: { $regex: search, $options: "i" } },
@@ -125,7 +146,6 @@ export class UserManagementService implements IUserManagementService {
     if (filter) {
       const [min, max] = filter.split("-").map(Number);
 
-      
       if (!isNaN(min) && !isNaN(max)) {
         query.cibilScore = { $gte: min, $lte: max };
       }
@@ -137,7 +157,7 @@ export class UserManagementService implements IUserManagementService {
     else if (sortBy === "newest") sortCriteria = { createdAt: -1 };
     else if (sortBy === "oldest") sortCriteria = { createdAt: 1 };
 
-    return await this.userRepository.fetchVerifiedUsers(
+    return await this._userRepository.fetchVerifiedUsers(
       query,
       sortCriteria,
       limit,

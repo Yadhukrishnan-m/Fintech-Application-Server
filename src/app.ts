@@ -3,10 +3,12 @@ import userRoutes from './routes/user.route'
 import adminRoutes from './routes/admin.route'
 import { ErrorHandler} from './middlewares/error-handle.middleware'
 import cookieParser from "cookie-parser";
-import morgan from "morgan";
+
 const app=express()
 app.use(cookieParser());
 import cors from "cors";
+import logger from './utils/logger';
+import morgan from 'morgan';
 app.use(
   cors({
     origin: "http://localhost:5173", 
@@ -14,8 +16,10 @@ app.use(
   })
 );
 
-app.use(express.json())
+
 app.use(morgan("dev"));
+app.use(express.json())
+app.use(logger)
 app.use('/',userRoutes)
 app.use("/admin", adminRoutes);
 

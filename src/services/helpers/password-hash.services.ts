@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import { IPasswordService } from "../../interfaces/helpers/password-hash.service.interface";
-
+import { injectable } from "inversify";
+@injectable()
 export class PasswordService implements IPasswordService {
    async hashPassword(password: string): Promise<string> {
     const saltRounds = 10;

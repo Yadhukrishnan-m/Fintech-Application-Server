@@ -7,51 +7,50 @@ import { IAdmin } from "../../models/admin.model";
 import { IAdminRepository } from "../../interfaces/repositories/admin.repository.interface";
 import { MESSAGES } from "../../config/constants/messages";
 import { STATUS_CODES } from "../../config/constants/status-code";
-export class AuthUserService implements IAuthAdminService {
-    
-  private passwordService: IPasswordService;
-  private jwtService: IJwtService;
+import { injectable, inject } from "inversify";
+import { TYPES } from "../../config/inversify/inversify.types";
+@injectable()
+export class AuthAdminService implements IAuthAdminService {
   constructor(
-    private adminrepository:IAdminRepository,
-    passwordService: IPasswordService,
-    jwtService: IJwtService,
- 
-  ) {
-    this.passwordService = passwordService;
-    this.jwtService = jwtService;
-  }
+    @inject(TYPES.AdminRepository) private _adminrepository: IAdminRepository,
+    @inject(TYPES.PasswordService) private _passwordService: IPasswordService,
+    @inject(TYPES.JwtService)  private _jwtService: IJwtService
+  ) {}
   async login(
     adminCredential: LoginDto
   ): Promise<{ accessToken: string; refreshToken: string }> {
-
-    
-    const adminData: IAdmin | null = await this.adminrepository.findByEmail(
+    const adminData: IAdmin | null = await this._adminrepository.findByEmail(
       adminCredential.email
     );
-
+  
+    
     if (!adminData) {
-      throw new CustomError( MESSAGES.INVALID_CREDENTIALS,
-              STATUS_CODES.UNAUTHORIZED);
+      throw new CustomError(
+        MESSAGES.INVALID_CREDENTIALS,
+        STATUS_CODES.UNAUTHORIZED
+      );
     }
-    if (!adminData.password ) {
+     
+    if (!adminData.password) {
       throw new CustomError(
         MESSAGES.INVALID_CREDENTIALS,
         STATUS_CODES.UNAUTHORIZED
       );
     }
 
-    const isPasswordValid: boolean = await this.passwordService.comparePassword(
-      adminCredential.password,
-      adminData.password
-    );
+    const isPasswordValid: boolean =
+      await this._passwordService.comparePassword(
+        adminCredential.password,
+        adminData.password
+      );
     if (!isPasswordValid) {
       throw new CustomError(
         MESSAGES.INVALID_CREDENTIALS,
         STATUS_CODES.UNAUTHORIZED
       );
     }
-    const accessToken = this.jwtService.generateAccessToken(adminData._id);
-    const refreshToken = this.jwtService.generateRefreshToken(adminData._id);
+    const accessToken = this._jwtService.generateAccessToken(adminData._id);
+    const refreshToken = this._jwtService.generateRefreshToken(adminData._id);
 
     return { accessToken, refreshToken };
   }

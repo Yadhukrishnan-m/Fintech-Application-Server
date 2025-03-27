@@ -37,3 +37,6 @@ export const uploadFiles = upload.fields([
 ]);
 
 export const uploadLoanImage = upload.single("loanImage");
+
+export const uploadAdditionalDocs = upload.any();
+ 

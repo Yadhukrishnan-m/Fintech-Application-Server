@@ -12,7 +12,7 @@ export interface IUser extends Document {
   income?: number;
   finscore?: number;
   gender?: "male" | "female" | "other";
-  password: string;
+  password?: string;
   aadhaarNumber?: string;
   panNumber?: string;
   cibilScore?: number;
