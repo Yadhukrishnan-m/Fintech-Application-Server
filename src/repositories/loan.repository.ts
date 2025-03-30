@@ -25,7 +25,19 @@ export class LoanRepository
 
     return { loans, totalPages };
   }
-  async findAllActiveLoans(): Promise<ILoan[]> {
-    return await LoanModel.find({ isActive: true });
+  async findAllActiveLoans(
+    query: any,
+    sortQuery: any,
+    skip: number,
+    pageSize: number
+  ): Promise<{ loans: ILoan[]; totalPages: number }> {
+    const loans = await LoanModel.find(query)
+      .sort(sortQuery)
+      .skip(skip)
+      .limit(pageSize);
+    const totalLoans = await LoanModel.countDocuments(query);
+    const totalPages = Math.ceil(totalLoans / pageSize);
+
+    return { loans, totalPages };
   }
 }

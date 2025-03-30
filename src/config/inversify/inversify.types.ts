@@ -17,6 +17,7 @@ export const TYPES = {
   JwtService: Symbol.for("JwtService"),
   UploadToS3: Symbol.for("UploadToS3"),
   InterestCalculator: Symbol.for("InterestCalculator"),
+  EmiCalculator:Symbol.for("EmiCalculator"),
   //services
   AuthAdminService: Symbol.for("AuthAdminService"),
   UserManagementService: Symbol.for("UserManagementService"),

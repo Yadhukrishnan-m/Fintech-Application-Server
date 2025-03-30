@@ -24,6 +24,7 @@ export interface IUser extends Document {
   status?: string;
   createdAt?: Date;
   updatedAt?: Date;
+  message?:string;
 }
 
 // Define the User schema
@@ -44,9 +45,10 @@ const UserSchema = new Schema<IUser>(
     cibilScore: { type: Number },
     aadhaarDoc: { type: String },
     panDoc: { type: String },
-    cibilDoc: { type: String },
+    cibilDoc: { type: String }, 
     additionalDoc: { type: String },
     isBlacklisted: { type: Boolean, default: false },
+    message:{type:String},
     status: {
       type: String,
       enum: ["pending", "completed", "verified", "rejected"],

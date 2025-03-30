@@ -117,10 +117,13 @@ export class ApplicationManagementService
     if (!applicationDataPopulated) {
       throw new CustomError(MESSAGES.NOT_FOUND, STATUS_CODES.NOT_FOUND);
     }
+    console.log(applicationDataPopulated.gracePeriod);
+    
     const contentData = {
       userName: applicationDataPopulated.userId.name,
       loanName: applicationDataPopulated.userId.name,
       loanId: applicationDataPopulated.loanId.loanId,
+   
       amount: applicationDataPopulated.amount,
       interest: applicationDataPopulated.interest,
       tenure: applicationDataPopulated.tenure,
@@ -134,6 +137,7 @@ export class ApplicationManagementService
         userId: applicationData.userId,
         loanId: applicationData.loanId,
         applicationId: applicationData._id,
+        gracePeriod: applicationDataPopulated.gracePeriod,
         amount: applicationData.amount,
         interest: applicationData.interest,
         duePenalty: applicationData.duePenalty,

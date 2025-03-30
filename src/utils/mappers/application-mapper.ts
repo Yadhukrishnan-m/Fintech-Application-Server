@@ -15,6 +15,7 @@ export class LoanApplicationModelMapper {
       interest: Number(dto.interest),
       duePenalty: Number(dto.duePenalty),
       tenure: Number(dto.tenure),
+      gracePeriod:Number(dto.gracePeriod),
       accountNumber:dto.accountNumber,
       ifscCode:dto.ifscCode,
       documents: uploadedDocuments,

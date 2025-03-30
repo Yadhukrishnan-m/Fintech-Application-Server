@@ -13,6 +13,7 @@ export interface IUserLoan extends Document {
   interest: number;
   duePenalty: number;
   tenure: number;
+  gracePeriod: number;
   appliedDetails: string;
   transaction: mongoose.Types.ObjectId[]; // References to transactions
   createdAt: Date;
@@ -27,6 +28,7 @@ export interface IUserLoanPopulated {
   interest: number;
   duePenalty: number;
   tenure: number;
+  gracePeriod:number;
   appliedDetails: string;
   transaction: ITransaction[];
   createdAt: Date;
@@ -51,6 +53,7 @@ const UserLoanSchema = new Schema<IUserLoan>(
       required: true,
     },
     amount: { type: Number, required: true },
+    gracePeriod: { type: Number, required: true },
     interest: { type: Number, required: true },
     duePenalty: { type: Number, required: true },
     tenure: { type: Number, required: true },

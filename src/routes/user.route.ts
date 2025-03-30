@@ -55,6 +55,11 @@ router.post(
   (req: Request, res: Response, next: NextFunction) =>
     authUserController.resetPassword(req, res, next)
 );
+router.patch(
+  "/change-password",authenticateUser,
+  (req: Request, res: Response, next: NextFunction) =>
+    authUserController.changePassword(req, res, next)
+);
 router.post(
   "/logout",
   (req: Request, res: Response, next: NextFunction) =>
@@ -124,4 +129,13 @@ router.get(
     applicationController.getApplicationDetails(req, res, next);
   }
 );
+
+router.get(
+  "/user-loan/emis/:userLoanId",
+  
+  (req: Request, res: Response, next: NextFunction) => {
+    userLoanController.getUserLoanEmis(req, res, next);
+  }
+);
+
 export default router;

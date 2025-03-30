@@ -53,7 +53,7 @@ export class AuthUserService implements IAuthUserService {
   async generateOtp(email: string): Promise<IOtp> {
     const otp: number = Math.floor(1000 + Math.random() * 9000);
     const expireAt: Date = new Date(Date.now() + 2 * 60 * 1000);
-    const otpdata:Partial <IOtp> = {
+    const otpdata: Partial<IOtp> = {
       email,
       otp: String(otp),
       expireAt,
@@ -156,7 +156,7 @@ export class AuthUserService implements IAuthUserService {
         name: name,
         customerId: Math.random().toString(36).substring(2, 9),
       };
-       const userModel = UserMapper.toRegistrationModel(UserData);
+      const userModel = UserMapper.toRegistrationModel(UserData);
       user = await this._userRepository.create(userModel);
     }
 
@@ -191,5 +191,41 @@ export class AuthUserService implements IAuthUserService {
     }
     const hashedPassword = await this._passwordService.hashPassword(password);
     await this._userRepository.updatePassword(email, hashedPassword);
+  }
+
+  async changePassword(
+    currentPassword: string,
+    newPassword: string,
+    userId:string
+  ): Promise<void> {
+   
+    const user = await this._userRepository.findById(userId);
+    if (!user||!user?.password) {
+      throw new CustomError(
+        MESSAGES.RESOURCE_NOT_FOUND,
+        STATUS_CODES.NOT_FOUND
+      );
+    }
+    const isCurrentPasswordTrue = await this._passwordService.comparePassword(
+      currentPassword,
+      user.password
+    );
+    console.log(currentPassword);
+   
+    if (!isCurrentPasswordTrue) {
+        throw new CustomError(
+          MESSAGES.INVALID_CREDENTIALS,
+          STATUS_CODES.FORBIDDEN
+        );
+    }
+
+
+    const hashedPassword = await this._passwordService.hashPassword(
+      newPassword
+    );
+    const updatedData={
+    password:  hashedPassword
+    }
+    await this._userRepository.updateById(userId, updatedData);
   }
 }

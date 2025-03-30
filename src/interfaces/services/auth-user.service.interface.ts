@@ -16,4 +16,5 @@ export interface IAuthUserService {
   ): Promise<{ accessToken: string; refreshToken: string }>;
   forgotPassword(email: string): Promise<void>;
   resetPassword(token: string, password: string): Promise<void>;
+  changePassword(currentPassword: string, newPassword: string,userId:string): Promise<void>;
 }

@@ -11,19 +11,21 @@ export interface IApplication extends Document {
   interest: number;
   duePenalty: number;
   applicationId: String;
+  gracePeriod:number;
   status: string;
   message: string;
   accountNumber: string;
   ifscCode: string;
   documents: Record<string, string>[];
 }
-export interface IApplicationPopulated  {
+export interface IApplicationPopulated {
   userId: IUser;
   loanId: ILoan;
   amount: number;
   tenure: number;
   interest: number;
   duePenalty: number;
+  gracePeriod: number;
   applicationId: String;
   status: string;
   message: string;
@@ -52,6 +54,7 @@ const ApplicationSchema = new Schema<IApplication>(
     tenure: { type: Number, required: true },
     interest: { type: Number, required: true },
     duePenalty: { type: Number, required: true },
+    gracePeriod: { type: Number, required: true },
     status: { type: String, required: true, default: "pending" },
     message: { type: String },
     documents: [

@@ -16,29 +16,44 @@ interface AuthenticatedRequest extends Request {
 
 @injectable()
 export class UserLoanController {
-  constructor(@inject(TYPES.UserLoanService) private _userLoanService: IUserLoanService) {}
+  constructor(
+    @inject(TYPES.UserLoanService) private _userLoanService: IUserLoanService
+  ) {}
 
-    async getUserLoansByUserId(
-      req: Request,
-      res: Response,
-      next: NextFunction
-    ) {
-      try {
-        const { userId } = req as AuthenticatedRequest;
-        const { page = 1 } = req.query;
-        const userLoans = await this._userLoanService.getUserLoanByUserId(
-          userId,
-          Number(page)
-        );
-  console.log(userLoans);
-  
-        res.status(STATUS_CODES.CREATED).json({
-          message: MESSAGES.CREATED,
-          success: true,
-          userLoans: userLoans,
-        });
-      } catch (error) {
-        next(error);
-      }
+  async getUserLoansByUserId(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { userId } = req as AuthenticatedRequest;
+      const { page = 1 } = req.query;
+      const userLoans = await this._userLoanService.getUserLoanByUserId(
+        userId,
+        Number(page)
+      );
+
+      res.status(STATUS_CODES.CREATED).json({
+        message: MESSAGES.CREATED,
+        success: true,
+        userLoans: userLoans,
+      });
+    } catch (error) {
+      next(error);
     }
+  }
+
+  async getUserLoanEmis(req: Request, res: Response, next: NextFunction) {
+    try {
+      // const { userId } = req as AuthenticatedRequest;
+      
+     const { userLoanId }=req.params
+      const {emiSchedule,userLoan} = await this._userLoanService.getEmis(userLoanId);
+
+      res.status(STATUS_CODES.CREATED).json({
+        message: MESSAGES.CREATED,
+        success: true,
+        emi: emiSchedule,
+        userLoan: userLoan,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }

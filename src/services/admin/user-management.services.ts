@@ -83,7 +83,7 @@ export class UserManagementService implements IUserManagementService {
     const updatedUser = { ...user, aadhaarDoc, panDoc, cibilDoc };
     return updatedUser;
   }
-  async verifyUser(id: string, userstatus: boolean): Promise<void> {
+  async verifyUser(id: string, userstatus: boolean,message?:string): Promise<void> {
     if (userstatus) {
       const user = await this._userRepository.findById(id);
       if (!user || !user.aadhaarNumber || !user.panNumber) {
@@ -114,6 +114,7 @@ export class UserManagementService implements IUserManagementService {
 
     const userData = {
       status: userstatus ? "verified" : "rejected",
+      message: message? message:''
     };
     await this._userRepository.updateById(id, userData);
   }

@@ -45,9 +45,15 @@ export class UserManagementController {
   async verifyUser(req: Request, res: Response, next: NextFunction) {
     try {
       const id = req.params.id;
-      const { status } = req.body;
+      const { status,message } = req.body;
+    
+      
 
-      const user = await this._userManagementService.verifyUser(id, status);
+      const user = await this._userManagementService.verifyUser(
+        id,
+        status,
+        message
+      );
 
       res
         .status(STATUS_CODES.OK)

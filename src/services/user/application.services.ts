@@ -50,7 +50,6 @@ export class ApplicationService implements IApplicationService {
 
 
 
-
     const userDetails: IUser | null = await this._userRepository.findById(
       userId
     );
@@ -66,7 +65,8 @@ export class ApplicationService implements IApplicationService {
       !loanDetails ||
       !loanDetails.duePenalty ||
       !userDetails ||
-      !userDetails.cibilScore
+      !userDetails.cibilScore ||
+      !loanDetails.gracePeriod
     ) {
       throw new CustomError(MESSAGES.NOT_FOUND, STATUS_CODES.NOT_FOUND);
     }
@@ -92,6 +92,7 @@ export class ApplicationService implements IApplicationService {
       loanId,
       amount,
       tenure,
+      gracePeriod:loanDetails.gracePeriod,
       accountNumber,
       ifscCode,
     };

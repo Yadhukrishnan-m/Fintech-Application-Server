@@ -20,6 +20,7 @@ export interface ApplicationDto {
   accountNumber: string;
   ifscCode: string;
   documents: Express.Multer.File[];
-   interest?: number,
-    duePenalty?: number
+  interest?: number;
+  gracePeriod?: number;
+  duePenalty?: number;
 }

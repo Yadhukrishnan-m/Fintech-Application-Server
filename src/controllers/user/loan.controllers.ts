@@ -19,12 +19,20 @@ export class LoanController {
 
   async getLoans(req: Request, res: Response, next: NextFunction) {
     try {
-      const loans = await this._loanService.getLoans();
+        const { page = 1, search, sortBy } = req.query;
+        const pageNumber = Number(page);
+         const { loans, totalPages } = await this._loanService.getLoans(
+           pageNumber,
+           search as string,
+           sortBy as string,
+         );
+      
 
       res.status(STATUS_CODES.OK).json({
         success: true,
         message: MESSAGES.DATA_SENT_SUCCESS,
         loans: loans,
+        totalPages
       });
     } catch (error) {
       next(error);

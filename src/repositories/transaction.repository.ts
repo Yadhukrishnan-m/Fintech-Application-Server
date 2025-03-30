@@ -9,13 +9,16 @@ import { ITransaction, TransactionModel } from "../models/transaction.model";
 export class TransactionRepository
   extends BaseRepository<ITransaction>
   implements ITransactionRepository
-
 {
   constructor() {
     super(TransactionModel);
   }
 
-
-
-
+ async  getUserLoanTransactions(userLoanId:string):Promise<ITransaction[]>{
+  return await TransactionModel.find({
+    userLoanId,
+    paymentStatus: "completed",
+    type: "emi",
+  });
+ }
 }

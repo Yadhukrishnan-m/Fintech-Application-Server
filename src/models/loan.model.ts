@@ -12,6 +12,7 @@
     minimumInterest: number;
     maximumInterest: number;
     duePenalty: number;
+    gracePeriod:number;
     features: string;
     eligibility: string;
     loanImage: string;
@@ -31,6 +32,7 @@
       minimumInterest: { type: Number, required: true },
       maximumInterest: { type: Number, required: true },
       duePenalty: { type: Number, required: true },
+      gracePeriod:{type:Number,required:true},
       features: { type: String, required: true },
       eligibility: { type: String, required: true },
       loanImage: { type: String, required: true },

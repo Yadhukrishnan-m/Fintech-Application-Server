@@ -8,7 +8,7 @@ export interface IUserManagementService {
     filterCibil?: string
   ): Promise<{ users: IUser[]; totalPages: number }>;
   getUserById(id: string): Promise<IUser>;
-  verifyUser(id: string, userstatus: boolean): Promise<void>;
+  verifyUser(id: string, userstatus: boolean,message?:string | undefined): Promise<void>;
   getVerifiedUsers(
     page: number,
     search?: string,

@@ -7,5 +7,10 @@ export interface ILoanRepository extends IBaseRepository<ILoan> {
     skip: number,
     pageSize: number
   ): Promise<{ loans: ILoan[]; totalPages: number }>;
-  findAllActiveLoans(): Promise<ILoan[]>;
+  findAllActiveLoans(
+    query: any,
+    sortQuery: any,
+    skip: number,
+    pageSize: number
+  ): Promise<{ loans: ILoan[]; totalPages: number }>;
 }

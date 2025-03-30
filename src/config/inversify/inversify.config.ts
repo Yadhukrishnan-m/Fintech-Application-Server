@@ -45,6 +45,7 @@ import { Transaction } from "mongodb";
 import { TransactionRepository } from "../../repositories/transaction.repository";
 import { UserLoanController } from "../../controllers/user/user-loan.controllers";
 import { UserLoanService } from "../../services/user/user-loan.services";
+import { EmiCalculator } from "../../services/helpers/emiCalculator.services";
 
 // Create the Inversify container
 const container = new Container();
@@ -69,6 +70,7 @@ container.bind<PasswordService>(TYPES.PasswordService).to(PasswordService);
 container.bind<EmailService>(TYPES.EmailService).to(EmailService);
 container.bind<JwtService>(TYPES.JwtService).to(JwtService);
 container.bind<UploadToS3>(TYPES.UploadToS3).to(UploadToS3);
+container.bind<EmiCalculator>(TYPES.EmiCalculator).to(EmiCalculator);
 container
   .bind<InterestCalculator>(TYPES.InterestCalculator)
   .to(InterestCalculator);

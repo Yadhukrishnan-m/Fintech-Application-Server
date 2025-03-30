@@ -13,6 +13,7 @@ export interface LoanDTO {
   duePenalty: string;
   features: string;
   eligibility: string;
+  gracePeriod:string;
   loanImage?: Express.Multer.File;
   additionalDocuments?: string[];
 }

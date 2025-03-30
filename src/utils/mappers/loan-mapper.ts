@@ -15,6 +15,7 @@ export class LoanModelMapper {
       minimumInterest: Number(dto.minimumInterest),
       maximumInterest: Number(dto.maximumInterest),
       duePenalty: Number(dto.duePenalty),
+      gracePeriod:Number(dto.gracePeriod),
       features: dto.features,
       eligibility: dto.eligibility,
       loanImage: imageUrl,

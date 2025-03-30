@@ -6,6 +6,12 @@ import { MESSAGES } from "../../config/constants/messages";
 import { STATUS_CODES } from "../../config/constants/status-code";
 import { TYPES } from "../../config/inversify/inversify.types"; 
 import { injectable, inject } from "inversify";
+
+interface AuthenticatedRequest extends Request {
+  userId: string;
+}
+
+
 @injectable()
 export class AuthUserController {
   constructor(
@@ -115,6 +121,22 @@ export class AuthUserController {
     try {
       const { token, password } = req.body;
       await this._authUserService.resetPassword(token, password);
+      res
+        .status(STATUS_CODES.CREATED)
+        .json({ success: true, message: MESSAGES.PASSWORD_RESET_SUCCESS });
+    } catch (error) {
+      next(error);
+    }
+  }
+  async changePassword(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { currentPassword, newPassword } = req.body;
+        const { userId } = req as AuthenticatedRequest;
+        await this._authUserService.changePassword(
+          currentPassword,
+          newPassword,
+          userId
+        );
       res
         .status(STATUS_CODES.CREATED)
         .json({ success: true, message: MESSAGES.PASSWORD_RESET_SUCCESS });
