@@ -12,7 +12,7 @@ export const MESSAGES = {
   ACCOUNT_VERIFIED: "Account successfully verified.",
   ACCOUNT_NOT_VERIFIED: "Your account is not verified yet.",
   LOGOUT_SUCCESS: "Logged out successfully.",
-
+ TRANSACTION_FAILED:'Transaction Failed',
   // Registration & Profile
   REGISTRATION_SUCCESS: "Registration successful.",
   REGISTRATION_FAILED: "Registration failed. Please try again.",

@@ -50,7 +50,7 @@ export class EmiCalculator implements IEmiCalculator {
  
   const daysLate = Math.max(
     0,
-    Math.floor((today.getTime() - gracePeriodEndDate.getTime()) / msPerDay)
+    Math.floor((today.getTime() - gracePeriodEndDate.getTime()) / msPerDay)+1
   );
   const dailyPenaltyRate = annualPenaltyRate / 100 / 365;
   const totalPenalty = emi * dailyPenaltyRate * daysLate;

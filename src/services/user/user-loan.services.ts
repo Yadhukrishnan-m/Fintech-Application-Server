@@ -11,6 +11,8 @@ import { ITransaction } from "../../models/transaction.model";
 import { ITransactionRepository } from "../../interfaces/repositories/transaction.repository.interface";
 import { IEmiCalculator } from "../../interfaces/helpers/emiCalculator.service.interface";
 import { IEmi } from "../../dtos/shared/emi.dto";
+import { today } from "../../config/testDate";
+
 @injectable()
 export class UserLoanService implements IUserLoanService {
   constructor(
@@ -71,7 +73,7 @@ export class UserLoanService implements IUserLoanService {
         tenure
       );
 
-    const today = new Date("2025-04-30"); // for testing phace give dates for testing
+    // const today = new Date("2025-04-30"); // for testing phace give dates for testing
     // const today=new Date()
     today.setHours(0, 0, 0, 0);
 
@@ -118,6 +120,8 @@ export class UserLoanService implements IUserLoanService {
 
       if (isPaid) {
         emiStatus = "paid";
+     
+       penalty=isPaid ? paidTransactions.get(i)?.penaltyAmount || 0:0
       } else if (today < thisEmiDueDate) {
         emiStatus = "upcoming";
       } else if (isExactDueDate) {
