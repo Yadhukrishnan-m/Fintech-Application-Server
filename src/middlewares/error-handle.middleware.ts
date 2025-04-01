@@ -9,7 +9,7 @@ export class ErrorHandler {
     next: NextFunction
   ): void {
     if (!err.statusCode) {
-              console.log(err);
+      console.log(err);
     }
     const statusCode = err.statusCode || 500;
     res.status(statusCode).json({

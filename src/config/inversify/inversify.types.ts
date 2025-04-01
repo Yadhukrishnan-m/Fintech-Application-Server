@@ -17,7 +17,8 @@ export const TYPES = {
   JwtService: Symbol.for("JwtService"),
   UploadToS3: Symbol.for("UploadToS3"),
   InterestCalculator: Symbol.for("InterestCalculator"),
-  EmiCalculator:Symbol.for("EmiCalculator"),
+  EmiCalculator: Symbol.for("EmiCalculator"),
+  RazorpayService:Symbol.for("RazorpayService"),
   //services
   AuthAdminService: Symbol.for("AuthAdminService"),
   UserManagementService: Symbol.for("UserManagementService"),
@@ -28,7 +29,9 @@ export const TYPES = {
   ApplicationManagementService: Symbol.for("ApplicationManagementService"),
   ApplicationService: Symbol.for("ApplicationService"),
   UserLoanService: Symbol.for("UserLoanService"),
-
+PaymentService:Symbol.for("PaymentService"),
+TransactionService:Symbol.for("TransactionService"),
+AdminTransactionService:Symbol.for("AdminTransactionService"),
   // controllers
   AuthAdminController: Symbol.for("AuthAdminController"),
   LoanManagementController: Symbol.for("LoanManagementController"),
@@ -37,9 +40,11 @@ export const TYPES = {
     "ApplicationManagementController"
   ),
   UserLoanController: Symbol.for("UserLoanController"),
-
+  AdminTransactionController:Symbol.for("AdminTransactionController"),
+TransactionController:Symbol.for("TransactionController"),
   UserManagementController: Symbol.for("UserManagementController"),
   AuthUserController: Symbol.for("AuthUserController"),
   ProfileController: Symbol.for("ProfileController"),
   LoanController: Symbol.for("LoanController"),
+  PaymentController: Symbol.for("PaymentController"),
 };

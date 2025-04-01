@@ -10,6 +10,8 @@ import { ProfileController } from "../controllers/user/user-profile.controllers"
 import { LoanController } from "../controllers/user/loan.controllers";
 import { ApplicationController } from "../controllers/user/application.controllers";
 import { UserLoanController } from "../controllers/user/user-loan.controllers";
+import { PaymentController } from "../controllers/user/payment.controllers";
+import { TransactionController } from "../controllers/user/transaction.controllers";
 const authUserController = container.get<AuthUserController>(
   TYPES.AuthUserController
 );
@@ -19,8 +21,10 @@ const profileController = container.get<ProfileController>(
 const loanController = container.get<LoanController>(
   TYPES.LoanController
 );
+const paymentController=container.get<PaymentController>(TYPES.PaymentController)
 const userLoanController=container.get<UserLoanController>(TYPES.UserLoanController)
 const applicationController=container.get<ApplicationController>(TYPES.ApplicationController)
+const transactionController=container.get<TransactionController>(TYPES.TransactionController)
 const router = express.Router();
 
 router.post("/register", (req: Request, res: Response, next: NextFunction) =>
@@ -132,10 +136,33 @@ router.get(
 
 router.get(
   "/user-loan/emis/:userLoanId",
-  
+  authenticateUser,
   (req: Request, res: Response, next: NextFunction) => {
     userLoanController.getUserLoanEmis(req, res, next);
   }
 );
+router.get(
+  "/razorpay/create-order/:userLoanId",
+  // authenticateUser,
+  (req: Request, res: Response, next: NextFunction) => {
+    paymentController.createOrder(req, res, next);
+  }
+);
+router.post(
+  "/razorpay/verify-payment",
+  authenticateUser,
+  (req: Request, res: Response, next: NextFunction) => {
+    paymentController.verifyRazorpayPayment(req, res, next);
+  }
+);
+
+router.get(
+  "/transactions",
+  authenticateUser,
+  (req: Request, res: Response, next: NextFunction) => {
+    transactionController.getTransactions(req, res, next);
+  }
+);
 
 export default router;
+  

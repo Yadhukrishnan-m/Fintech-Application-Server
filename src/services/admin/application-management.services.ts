@@ -135,6 +135,7 @@ export class ApplicationManagementService
     if (applicationData.status == "approved") {
       const userLoan = {
         userId: applicationData.userId,
+        userLoanId: Math.random().toString(36).substring(2, 9),
         loanId: applicationData.loanId,
         applicationId: applicationData._id,
         gracePeriod: applicationDataPopulated.gracePeriod,

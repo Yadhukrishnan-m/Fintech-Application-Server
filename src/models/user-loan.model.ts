@@ -12,6 +12,7 @@ export interface IUserLoan extends Document {
   amount: number;
   interest: number;
   duePenalty: number;
+  userLoanId: string;
   tenure: number;
   gracePeriod: number;
   appliedDetails: string;
@@ -27,8 +28,9 @@ export interface IUserLoanPopulated {
   amount: number;
   interest: number;
   duePenalty: number;
+  userLoanId:string;
   tenure: number;
-  gracePeriod:number;
+  gracePeriod: number;
   appliedDetails: string;
   transaction: ITransaction[];
   createdAt: Date;
@@ -53,6 +55,7 @@ const UserLoanSchema = new Schema<IUserLoan>(
       required: true,
     },
     amount: { type: Number, required: true },
+    userLoanId: { type: String, required: true },
     gracePeriod: { type: Number, required: true },
     interest: { type: Number, required: true },
     duePenalty: { type: Number, required: true },

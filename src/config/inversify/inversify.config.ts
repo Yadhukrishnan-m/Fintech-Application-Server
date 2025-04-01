@@ -46,6 +46,13 @@ import { TransactionRepository } from "../../repositories/transaction.repository
 import { UserLoanController } from "../../controllers/user/user-loan.controllers";
 import { UserLoanService } from "../../services/user/user-loan.services";
 import { EmiCalculator } from "../../services/helpers/emiCalculator.services";
+import { PaymentService } from "../../services/user/payment.services";
+import { PaymentController } from "../../controllers/user/payment.controllers";
+import { RazorpayService } from "../../services/helpers/razorpay.services";
+import { TransactionService } from "../../services/user/transaction.services";
+import { TransactionController } from "../../controllers/user/transaction.controllers";
+import { AdminTransactionController } from "../../controllers/admin/admin-transaction.controllers";
+import { AdminTransactionService } from "../../services/admin/admin-transaction.services";
 
 // Create the Inversify container
 const container = new Container();
@@ -67,6 +74,7 @@ container.bind<AdminRepository>(TYPES.AdminRepository).to(AdminRepository);
 
 // Bind Common Services
 container.bind<PasswordService>(TYPES.PasswordService).to(PasswordService);
+container.bind<RazorpayService>(TYPES.RazorpayService).to(RazorpayService);
 container.bind<EmailService>(TYPES.EmailService).to(EmailService);
 container.bind<JwtService>(TYPES.JwtService).to(JwtService);
 container.bind<UploadToS3>(TYPES.UploadToS3).to(UploadToS3);
@@ -81,6 +89,10 @@ container
 container.bind<AuthUserService>(TYPES.AuthUserService).to(AuthUserService);
 container.bind<ProfileService>(TYPES.ProfileService).to(ProfileService);
 container.bind<LoanService>(TYPES.LoanService).to(LoanService);
+container.bind<PaymentService>(TYPES.PaymentService).to(PaymentService);
+container
+  .bind<TransactionService>(TYPES.TransactionService)
+  .to(TransactionService);
 container
   .bind<ApplicationService>(TYPES.ApplicationService)
   .to(ApplicationService);
@@ -89,6 +101,9 @@ container
 
 // Bind Admin Services
 container.bind<AuthAdminService>(TYPES.AuthAdminService).to(AuthAdminService);
+container
+  .bind<AdminTransactionService>(TYPES.AdminTransactionService)
+  .to(AdminTransactionService);
 container
   .bind<ApplicationManagementService>(TYPES.ApplicationManagementService)
   .to(ApplicationManagementService);
@@ -114,11 +129,20 @@ container
 container
   .bind<UserLoanController>(TYPES.UserLoanController)
   .to(UserLoanController);
+  container
+    .bind<PaymentController>(TYPES.PaymentController)
+    .to(PaymentController);
+      container
+        .bind<TransactionController>(TYPES.TransactionController)
+        .to(TransactionController);
 
 // Bind Admin Controllers
 container
   .bind<AuthAdminController>(TYPES.AuthAdminController)
   .to(AuthAdminController);
+  container
+    .bind<AdminTransactionController>(TYPES.AdminTransactionController)
+    .to(AdminTransactionController);
 container
   .bind<UserManagementController>(TYPES.UserManagementController)
   .to(UserManagementController);

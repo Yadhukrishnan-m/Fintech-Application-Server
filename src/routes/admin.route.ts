@@ -8,6 +8,7 @@ import { UserManagementController } from "../controllers/admin/user-management.c
 import { LoanManagementController } from "../controllers/admin/loan-management.controllers";
 import { uploadLoanImage } from "../middlewares/multer.middleware";
 import { ApplicationManagementController } from "../controllers/admin/application-management.controllers";
+import { AdminTransactionController } from "../controllers/admin/admin-transaction.controllers";
 
 const authAdminController = container.get<AuthAdminController>(
   TYPES.AuthAdminController
@@ -19,6 +20,10 @@ const loanManagementController = container.get<LoanManagementController>(
   TYPES.LoanManagementController
 );
 const applicationManagementControlelr=container.get<ApplicationManagementController>(TYPES.ApplicationManagementController)
+const transactionController =container.get<AdminTransactionController>(TYPES.AdminTransactionController)
+  container.get<ApplicationManagementController>(
+    TYPES.ApplicationManagementController
+  );
 
 const router = express.Router();
 
@@ -107,10 +112,21 @@ router.get(
 
 router.patch(
   "/verify-application/:applicationId",
-  // authenticateAdmin,
+  authenticateAdmin,
   (req: Request, res: Response, next: NextFunction) =>
     applicationManagementControlelr.verifyApplication(req, res, next)
 );
 
+router.get(
+  "/transactions",
+  authenticateAdmin,
+  (req: Request, res: Response, next: NextFunction) => {
+    transactionController.getTransactions(req, res, next);
+  }
+);
+
+
+
 
 export default router;
+ 
