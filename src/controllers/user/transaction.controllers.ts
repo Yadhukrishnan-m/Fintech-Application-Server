@@ -7,7 +7,7 @@ import { STATUS_CODES } from "../../config/constants/status-code";
 
 import { injectable, inject } from "inversify";
 import { TYPES } from "../../config/inversify/inversify.types";
-import { IAdminTransactionService } from "../../interfaces/services/admin-transaction.service.interface";
+import { ITransactionService } from "../../interfaces/services/transaction.service.interface";
 interface AuthenticatedRequest extends Request {
   userId: string;
 }
@@ -15,8 +15,8 @@ interface AuthenticatedRequest extends Request {
 @injectable()
 export class TransactionController {
   constructor(
-     @inject(TYPES.AdminTransactionService)
-        private _transactionService: IAdminTransactionService
+     @inject(TYPES.TransactionService)
+        private _transactionService: ITransactionService
   ) {}
   async getTransactions(req: Request, res: Response, next: NextFunction) {
     try {   
@@ -31,7 +31,7 @@ export class TransactionController {
               sortBy as string,
               statusFilter as string,
               typeFilter as string,
-           
+           userId
             );
 
                 res.status(STATUS_CODES.OK).json({

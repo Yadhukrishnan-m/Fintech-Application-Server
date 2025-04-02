@@ -5,8 +5,8 @@ import { IUserLoan } from "./user-loan.model";
 
 export interface ITransaction extends Document {
   transactionId: string;
-  userId: mongoose.Types.ObjectId;
-  userLoanId: mongoose.Types.ObjectId;
+  userId?: mongoose.Types.ObjectId;
+  userLoanId?: mongoose.Types.ObjectId;
   amount: number;
   interestAmount?: number;
   penaltyAmount?: number;
@@ -16,8 +16,8 @@ export interface ITransaction extends Document {
 
 export interface ITransactionPopulated {
   transactionId: string;
-  userId: IUser;
-  userLoanId: IUserLoan;
+  userId?: IUser;
+  userLoanId?: IUserLoan;
   amount: number;
   interestAmount?: number;
   penaltyAmount?: number;
@@ -28,7 +28,7 @@ export interface ITransactionPopulated {
 
 const TransactionSchema = new Schema<ITransaction>(
   {
-    transactionId: { type: String, required: true,  },
+    transactionId: { type: String, required: true },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -40,8 +40,8 @@ const TransactionSchema = new Schema<ITransaction>(
       required: true,
     },
     amount: { type: Number, required: true },
-    interestAmount: { type: Number,  },
-    penaltyAmount: { type: Number,  },
+    interestAmount: { type: Number },
+    penaltyAmount: { type: Number },
     paymentStatus: {
       type: String,
       required: true,
@@ -50,8 +50,8 @@ const TransactionSchema = new Schema<ITransaction>(
     type: {
       type: String,
       required: true,
-      enum: ["emi",  "payout"],
-    }
+      enum: ["emi", "payout", "capitalDeposit"],
+    },
   },
   { timestamps: true }
 );

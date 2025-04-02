@@ -11,6 +11,7 @@ export const TYPES = {
   ApplicationRepository: Symbol.for("ApplicationRepository"),
   UserLoanRepository: Symbol.for("UserLoanRepository"),
   TransactionRepository: Symbol.for("TransactionRepository"),
+  CapitalRepository:Symbol.for("CapitalRepository"),
   //external services
   PasswordService: Symbol.for("PasswordService"),
   EmailService: Symbol.for("EmailService"),
@@ -18,7 +19,7 @@ export const TYPES = {
   UploadToS3: Symbol.for("UploadToS3"),
   InterestCalculator: Symbol.for("InterestCalculator"),
   EmiCalculator: Symbol.for("EmiCalculator"),
-  RazorpayService:Symbol.for("RazorpayService"),
+  RazorpayService: Symbol.for("RazorpayService"),
   //services
   AuthAdminService: Symbol.for("AuthAdminService"),
   UserManagementService: Symbol.for("UserManagementService"),
@@ -29,9 +30,9 @@ export const TYPES = {
   ApplicationManagementService: Symbol.for("ApplicationManagementService"),
   ApplicationService: Symbol.for("ApplicationService"),
   UserLoanService: Symbol.for("UserLoanService"),
-PaymentService:Symbol.for("PaymentService"),
-TransactionService:Symbol.for("TransactionService"),
-AdminTransactionService:Symbol.for("AdminTransactionService"),
+  PaymentService: Symbol.for("PaymentService"),
+  TransactionService: Symbol.for("TransactionService"),
+  CapitalAndTransactionService: Symbol.for("CapitalAndTransactionService"),
   // controllers
   AuthAdminController: Symbol.for("AuthAdminController"),
   LoanManagementController: Symbol.for("LoanManagementController"),
@@ -40,8 +41,10 @@ AdminTransactionService:Symbol.for("AdminTransactionService"),
     "ApplicationManagementController"
   ),
   UserLoanController: Symbol.for("UserLoanController"),
-  AdminTransactionController:Symbol.for("AdminTransactionController"),
-TransactionController:Symbol.for("TransactionController"),
+  CapitalAndTransactionController: Symbol.for(
+    "CapitalAndTransactionController"
+  ),
+  TransactionController: Symbol.for("TransactionController"),
   UserManagementController: Symbol.for("UserManagementController"),
   AuthUserController: Symbol.for("AuthUserController"),
   ProfileController: Symbol.for("ProfileController"),

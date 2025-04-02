@@ -1,1 +1,1 @@
-export const today = new Date("2025-07-10");
+export const today = new Date("2025-12-01");

@@ -8,7 +8,7 @@ import { UserManagementController } from "../controllers/admin/user-management.c
 import { LoanManagementController } from "../controllers/admin/loan-management.controllers";
 import { uploadLoanImage } from "../middlewares/multer.middleware";
 import { ApplicationManagementController } from "../controllers/admin/application-management.controllers";
-import { AdminTransactionController } from "../controllers/admin/admin-transaction.controllers";
+import { CapitalAndTransactionController } from "../controllers/admin/capital-transaction.controllers";
 
 const authAdminController = container.get<AuthAdminController>(
   TYPES.AuthAdminController
@@ -20,7 +20,7 @@ const loanManagementController = container.get<LoanManagementController>(
   TYPES.LoanManagementController
 );
 const applicationManagementControlelr=container.get<ApplicationManagementController>(TYPES.ApplicationManagementController)
-const transactionController =container.get<AdminTransactionController>(TYPES.AdminTransactionController)
+const capitalAndTransaction =container.get<CapitalAndTransactionController>(TYPES.CapitalAndTransactionController)
   container.get<ApplicationManagementController>(
     TYPES.ApplicationManagementController
   );
@@ -121,7 +121,22 @@ router.get(
   "/transactions",
   authenticateAdmin,
   (req: Request, res: Response, next: NextFunction) => {
-    transactionController.getTransactions(req, res, next);
+    capitalAndTransaction.getTransactions(req, res, next);
+  }
+);
+
+router.post(
+  "/add-capital",
+  authenticateAdmin,
+  (req: Request, res: Response, next: NextFunction) => {
+    capitalAndTransaction.addCapital(req, res, next);
+  }
+);
+router.get(
+  "/get-capital",
+  authenticateAdmin,
+  (req: Request, res: Response, next: NextFunction) => {
+    capitalAndTransaction.getcapital(req, res, next);
   }
 );
 

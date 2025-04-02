@@ -4,13 +4,13 @@ import { ITransaction, TransactionModel } from "../../models/transaction.model";
 export class TransactionModelMapper {
   static toModel(transactionData: {
     transactionId: string;
-    userId: string;
-    userLoanId: string;
+    userId?: string;
+    userLoanId?: string;
     amount: number;
     interestAmount?: number;
     penaltyAmount?: number;
     paymentStatus: "pending" | "completed" | "failed";
-    type: "emi" | "payout";
+    type: "emi" | "payout" |"capitalDeposit";
   }): ITransaction {
     return new TransactionModel({
       transactionId: transactionData.transactionId,

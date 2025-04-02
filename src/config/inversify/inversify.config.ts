@@ -51,8 +51,9 @@ import { PaymentController } from "../../controllers/user/payment.controllers";
 import { RazorpayService } from "../../services/helpers/razorpay.services";
 import { TransactionService } from "../../services/user/transaction.services";
 import { TransactionController } from "../../controllers/user/transaction.controllers";
-import { AdminTransactionController } from "../../controllers/admin/admin-transaction.controllers";
-import { AdminTransactionService } from "../../services/admin/admin-transaction.services";
+import { CapitalAndTransactionController } from "../../controllers/admin/capital-transaction.controllers";
+import { CapitalAndTransactionService } from "../../services/admin/capital-transaction.services";
+import { CapitalRepository } from "../../repositories/capital.repository";
 
 // Create the Inversify container
 const container = new Container();
@@ -68,7 +69,9 @@ container
   container
     .bind<TransactionRepository>(TYPES.TransactionRepository)
     .to(TransactionRepository);
-
+container
+  .bind<CapitalRepository>(TYPES.CapitalRepository)
+  .to(CapitalRepository);
 // Bind Admin Repositories
 container.bind<AdminRepository>(TYPES.AdminRepository).to(AdminRepository);
 
@@ -102,8 +105,8 @@ container
 // Bind Admin Services
 container.bind<AuthAdminService>(TYPES.AuthAdminService).to(AuthAdminService);
 container
-  .bind<AdminTransactionService>(TYPES.AdminTransactionService)
-  .to(AdminTransactionService);
+  .bind<CapitalAndTransactionService>(TYPES.CapitalAndTransactionService)
+  .to(CapitalAndTransactionService);
 container
   .bind<ApplicationManagementService>(TYPES.ApplicationManagementService)
   .to(ApplicationManagementService);
@@ -141,8 +144,8 @@ container
   .bind<AuthAdminController>(TYPES.AuthAdminController)
   .to(AuthAdminController);
   container
-    .bind<AdminTransactionController>(TYPES.AdminTransactionController)
-    .to(AdminTransactionController);
+    .bind<CapitalAndTransactionController>(TYPES.CapitalAndTransactionController)
+    .to(CapitalAndTransactionController);
 container
   .bind<UserManagementController>(TYPES.UserManagementController)
   .to(UserManagementController);

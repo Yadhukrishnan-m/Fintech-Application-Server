@@ -79,12 +79,10 @@ export class UserLoanService implements IUserLoanService {
 
     const emiSchedule = [];
 
-    const rawDueDate = new Date(userLoan.nextDueDate);
-    const startingDueDate = new Date(
-      rawDueDate.getUTCFullYear(),
-      rawDueDate.getUTCMonth(),
-      rawDueDate.getUTCDate()
-    );
+   const rawDueDate = new Date(userLoan.createdAt); // Get the loan creation date
+   const startingDueDate = new Date(rawDueDate); // Clone the original date
+   startingDueDate.setHours(0, 0, 0, 0);
+   startingDueDate.setMonth(startingDueDate.getMonth() + 1);
 
     let hasUnpaidEMI = false;
 
@@ -132,8 +130,10 @@ export class UserLoanService implements IUserLoanService {
         canPay = !hasUnpaidEMI;
       } else {
         emiStatus = "overdue";
+        
+        
         penalty = this._emiCalculator.calculatePenalty(
-          principalPerMonth,
+          emi,
           userLoan.duePenalty,
           gracePeriodEndDate,
           today
@@ -141,7 +141,7 @@ export class UserLoanService implements IUserLoanService {
         canPay = !hasUnpaidEMI;
         hasUnpaidEMI = true;
       }
-
+   
       emiSchedule.push({
         emiNumber: i,
         amount: emi,

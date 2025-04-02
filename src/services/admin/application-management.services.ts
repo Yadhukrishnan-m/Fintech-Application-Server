@@ -19,6 +19,7 @@ import { application } from "express";
 import moment from "moment";
 import { IUserLoanRepository } from "../../interfaces/repositories/user-loan.repository.interface";
 import { ITransactionRepository } from "../../interfaces/repositories/transaction.repository.interface";
+import { ICapitalRepository } from "../../interfaces/repositories/capital.repository.interface";
 @injectable()
 export class ApplicationManagementService
   implements IApplicationManagementService
@@ -31,7 +32,9 @@ export class ApplicationManagementService
     private _transactionRepository: ITransactionRepository,
     @inject(TYPES.ApplicationRepository)
     private _applicationRepository: IApplicationRepository,
-    @inject(TYPES.EmailService) private _emailService: IEmailService
+    @inject(TYPES.EmailService) private _emailService: IEmailService,
+       @inject(TYPES.CapitalRepository)
+        private _capitalRepository: ICapitalRepository,
   ) {}
   async getApplications(
     page: number,
@@ -143,7 +146,7 @@ export class ApplicationManagementService
         interest: applicationData.interest,
         duePenalty: applicationData.duePenalty,
         tenure: applicationData.tenure,
-        nextDueDate: moment().add(1, "months").toDate(),
+        // nextDueDate: moment().add(1, "months").toDate(),
       };
       const userLoanSaved = await this._userLoanRepository.create(userLoan);
       const transaction = {
@@ -161,7 +164,13 @@ export class ApplicationManagementService
         "Loan Approved",
         content   
       ); 
+      const capitalAmount=await this._capitalRepository.findOne({})
+      if (Number(capitalAmount?.availableBalance)<Number(applicationData.amount)) {
+        throw new CustomError('Insufficient Capital',STATUS_CODES.BAD_REQUEST)
+      }
+      await this._capitalRepository.decBalance(applicationData.amount);
     }
+
     if (applicationData.status == "rejected") {
       const content =
         this._emailService.generateLoanRejectionEmail(contentData);

@@ -79,12 +79,14 @@ export class TransactionService implements ITransactionService {
     );
     const totalPages = Math.ceil(totalApplications / pageSize);
 
-    const transactions = await this._transactionRepository.getTransactions(
+    const transactions = await this._transactionRepository.getUserTransactions(
       query,
       sortQuery,
       skip,
       pageSize
     );
+
+    
 
     return { transactions, totalPages };
   }

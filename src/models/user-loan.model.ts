@@ -18,7 +18,7 @@ export interface IUserLoan extends Document {
   appliedDetails: string;
   transaction: mongoose.Types.ObjectId[]; // References to transactions
   createdAt: Date;
-  nextDueDate: Date;
+  // nextDueDate: Date;
 }
 
 export interface IUserLoanPopulated {
@@ -34,7 +34,7 @@ export interface IUserLoanPopulated {
   appliedDetails: string;
   transaction: ITransaction[];
   createdAt: Date;
-  nextDueDate: Date;
+  // nextDueDate: Date;
 }
 
 const UserLoanSchema = new Schema<IUserLoan>(
@@ -60,7 +60,7 @@ const UserLoanSchema = new Schema<IUserLoan>(
     interest: { type: Number, required: true },
     duePenalty: { type: Number, required: true },
     tenure: { type: Number, required: true },
-    nextDueDate: { type: Date, required: true },
+    // nextDueDate: { type: Date, required: true },
   },
   { timestamps: true }
 );
