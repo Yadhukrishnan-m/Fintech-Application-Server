@@ -9,6 +9,8 @@ import { LoanManagementController } from "../controllers/admin/loan-management.c
 import { uploadLoanImage } from "../middlewares/multer.middleware";
 import { ApplicationManagementController } from "../controllers/admin/application-management.controllers";
 import { CapitalAndTransactionController } from "../controllers/admin/capital-transaction.controllers";
+import { UserLoanManagementController } from "../controllers/admin/user-loan-management.controllers";
+import { NotificationController } from "../controllers/admin/notification.controllers";
 
 const authAdminController = container.get<AuthAdminController>(
   TYPES.AuthAdminController
@@ -19,6 +21,9 @@ const userManagementController = container.get<UserManagementController>(
 const loanManagementController = container.get<LoanManagementController>(
   TYPES.LoanManagementController
 );
+
+const notificationController=container.get<NotificationController>(TYPES.NotificationController)
+const userLoanManagementController=container.get<UserLoanManagementController>(TYPES.UserLoanManagementController)
 const applicationManagementControlelr=container.get<ApplicationManagementController>(TYPES.ApplicationManagementController)
 const capitalAndTransaction =container.get<CapitalAndTransactionController>(TYPES.CapitalAndTransactionController)
   container.get<ApplicationManagementController>(
@@ -137,6 +142,37 @@ router.get(
   authenticateAdmin,
   (req: Request, res: Response, next: NextFunction) => {
     capitalAndTransaction.getcapital(req, res, next);
+  }
+);
+
+router.get(
+  "/get-userloan",
+  // authenticateAdmin,
+  (req: Request, res: Response, next: NextFunction) => {
+    userLoanManagementController.getUserLoans(req, res, next);
+  }
+);
+
+router.get(
+  "/user-loan/emis/:userLoanId",
+  authenticateAdmin,
+  (req: Request, res: Response, next: NextFunction) => {
+    userLoanManagementController.getUserLoanEmis(req, res, next);
+  }
+);
+
+router.get(
+  "/user/user-loans/:userId",
+  // authenticateAdmin,
+  (req: Request, res: Response, next: NextFunction) => {
+    userLoanManagementController.getUserLoansOfSingleUser(req, res, next);
+  }
+);
+router.post (
+  "/create-notification",
+  // authenticateAdmin,
+  (req: Request, res: Response, next: NextFunction) => {
+    notificationController.createNotification(req, res, next);
   }
 );
 

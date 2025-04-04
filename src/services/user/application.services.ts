@@ -66,7 +66,8 @@ export class ApplicationService implements IApplicationService {
       !loanDetails.duePenalty ||
       !userDetails ||
       !userDetails.cibilScore ||
-      !loanDetails.gracePeriod
+      !loanDetails.gracePeriod ||
+      !userDetails.finscore
     ) {
       throw new CustomError(MESSAGES.NOT_FOUND, STATUS_CODES.NOT_FOUND);
     }
@@ -81,6 +82,7 @@ export class ApplicationService implements IApplicationService {
 
     const interest = this._interestCalculator.calculateInterest(
       userDetails.cibilScore,
+      userDetails.finscore,
       loanDetails.minimumInterest,
       loanDetails.maximumInterest
     );
@@ -139,6 +141,7 @@ export class ApplicationService implements IApplicationService {
    const applicationDetails :IApplicationPopulated | null= await this._applicationRepository.applicationDetails(
      applicationId
    );
+   
    if (!applicationDetails) {
     throw new CustomError(MESSAGES.NOT_FOUND,STATUS_CODES.NOT_FOUND)
    }

@@ -20,6 +20,9 @@ import moment from "moment";
 import { IUserLoanRepository } from "../../interfaces/repositories/user-loan.repository.interface";
 import { ITransactionRepository } from "../../interfaces/repositories/transaction.repository.interface";
 import { ICapitalRepository } from "../../interfaces/repositories/capital.repository.interface";
+import { INotification } from "../../models/notification.model";
+import { INotificationRepository } from "../../interfaces/repositories/notification.repository.interface";
+import { getIO, getUserSocket } from "../../config/socket";
 @injectable()
 export class ApplicationManagementService
   implements IApplicationManagementService
@@ -33,8 +36,10 @@ export class ApplicationManagementService
     @inject(TYPES.ApplicationRepository)
     private _applicationRepository: IApplicationRepository,
     @inject(TYPES.EmailService) private _emailService: IEmailService,
-       @inject(TYPES.CapitalRepository)
-        private _capitalRepository: ICapitalRepository,
+    @inject(TYPES.CapitalRepository)
+    private _capitalRepository: ICapitalRepository,
+    @inject(TYPES.NotificationRepository)
+    private _notificationRepository: INotificationRepository
   ) {}
   async getApplications(
     page: number,
@@ -120,13 +125,13 @@ export class ApplicationManagementService
     if (!applicationDataPopulated) {
       throw new CustomError(MESSAGES.NOT_FOUND, STATUS_CODES.NOT_FOUND);
     }
-    console.log(applicationDataPopulated.gracePeriod);
-    
+    // console.log(applicationDataPopulated.gracePeriod);
+
     const contentData = {
       userName: applicationDataPopulated.userId.name,
       loanName: applicationDataPopulated.userId.name,
       loanId: applicationDataPopulated.loanId.loanId,
-   
+
       amount: applicationDataPopulated.amount,
       interest: applicationDataPopulated.interest,
       tenure: applicationDataPopulated.tenure,
@@ -157,18 +162,37 @@ export class ApplicationManagementService
         paymentStatus: "completed",
         type: "payout",
       };
-      await this._transactionRepository.create(transaction)
+      await this._transactionRepository.create(transaction);
       const content = this._emailService.generateLoanApprovalEmail(contentData);
       await this._emailService.sendEmail(
         applicationDataPopulated.userId.email,
         "Loan Approved",
-        content   
-      ); 
-      const capitalAmount=await this._capitalRepository.findOne({})
-      if (Number(capitalAmount?.availableBalance)<Number(applicationData.amount)) {
-        throw new CustomError('Insufficient Capital',STATUS_CODES.BAD_REQUEST)
+        content
+      );
+      const capitalAmount = await this._capitalRepository.findOne({});
+      if (
+        Number(capitalAmount?.availableBalance) < Number(applicationData.amount)
+      ) {
+        throw new CustomError("Insufficient Capital", STATUS_CODES.BAD_REQUEST);
       }
       await this._capitalRepository.decBalance(applicationData.amount);
+
+      const rejectedProfileNotification: Partial<INotification> = {
+        title: "Loan Application Approved",
+        message: `your loan application is approved. Application Id : '${applicationData.applicationId}'. The total amount ${applicationData.amount} is credited to your account`,
+        type: "personal",
+        userId: applicationData.userId.toString(),
+      };
+      await this._notificationRepository.create(rejectedProfileNotification);
+
+      const io = getIO();
+      const userSocketId = getUserSocket(applicationData.userId.toString());
+      if (userSocketId) {
+        io.to(userSocketId).emit(
+          "new_notification",
+          rejectedProfileNotification
+        );
+      }
     }
 
     if (applicationData.status == "rejected") {
@@ -179,6 +203,24 @@ export class ApplicationManagementService
         "Loan Rejected",
         content
       );
+
+      // sent notification on loan approval
+      const rejectedProfileNotification: Partial<INotification> = {
+        title: "Loan Application Rejected",
+        message: `your loan application is rejected. Application Id : '${applicationData.applicationId}'. Application is rejected due to  ${statusAndMessage.message}`,
+        type: "personal",
+        userId: applicationData.userId.toString(),
+      };
+      await this._notificationRepository.create(rejectedProfileNotification);
+
+      const io = getIO();
+      const userSocketId = getUserSocket(applicationData.userId.toString());
+      if (userSocketId) {
+        io.to(userSocketId).emit(
+          "new_notification",
+          rejectedProfileNotification
+        );
+      }
     }
   }
 }

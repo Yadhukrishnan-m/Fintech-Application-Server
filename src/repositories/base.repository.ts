@@ -32,4 +32,7 @@ export class BaseRepository<T extends Document> implements IBaseRepository<T> {
   async findOne(query: any): Promise<T | null> {
     return await this.model.findOne(query);
   }
+  async find(query: any): Promise<T[]> {
+    return await this.model.find(query);
+  }
 }

@@ -10,7 +10,8 @@ export class TransactionModelMapper {
     interestAmount?: number;
     penaltyAmount?: number;
     paymentStatus: "pending" | "completed" | "failed";
-    type: "emi" | "payout" |"capitalDeposit";
+    type: "emi" | "payout" | "capitalDeposit";
+    createdAt?:Date
   }): ITransaction {
     return new TransactionModel({
       transactionId: transactionData.transactionId,
@@ -21,6 +22,7 @@ export class TransactionModelMapper {
       penaltyAmount: transactionData.penaltyAmount,
       paymentStatus: transactionData.paymentStatus,
       type: transactionData.type,
+      createdAt: transactionData.createdAt,
     });
   }
 }

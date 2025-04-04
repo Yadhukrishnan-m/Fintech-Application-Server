@@ -3,6 +3,8 @@ import { IEmailService } from "../../interfaces/helpers/email-service.service.in
 import dotenv from "dotenv";
 import { injectable } from "inversify";
 import {  loanContentDTO } from "../../dtos/admin/applicationDTO";
+import { IUserLoan } from "../../models/user-loan.model";
+import { IUser } from "../../models/user.model";
 
 dotenv.config();
 @injectable()
@@ -275,5 +277,66 @@ export class EmailService implements IEmailService {
   </body>
   </html>
   `;
+  }
+
+  generateOverdueEmiEmailContent(
+    user: IUser,
+    userLoan: IUserLoan,
+    overdueEmiCount: number,
+    totalPenalty: number
+  ): string {
+    return `
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Overdue EMI Reminder</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 py-10">
+      <div class="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-lg">
+          <h2 class="text-center text-red-600 text-2xl font-semibold">
+              ⚠️ Overdue EMI Payment Reminder
+          </h2>
+
+          <p class="mt-4 text-gray-700">Dear <strong>${user.name}</strong>,</p>
+
+          <p class="text-gray-700 mt-2">
+              We hope you're doing well. This is a gentle reminder regarding your **pending EMI payments** 
+              for your loan <strong>(Loan ID: ${userLoan.userLoanId})</strong>.
+          </p>
+
+          ${
+            overdueEmiCount > 0
+              ? `<p class="text-red-600 font-semibold mt-2">🔴 ${overdueEmiCount} overdue EMI(s) pending.</p>`
+              : ""
+          }
+
+          ${
+            totalPenalty > 0
+              ? `<p class="text-red-600 font-semibold mt-2">
+                 ⚠️ A penalty of ₹${totalPenalty.toFixed(
+                   2
+                 )} has been applied due to late payments.
+              </p>`
+              : ""
+          }
+
+          <p class="text-gray-700 mt-4">
+              To avoid further penalties and ensure a good credit score, we kindly request you to clear your dues at the earliest.
+          </p>
+
+          <div class="border-t border-gray-300 mt-4 pt-4">
+              <p class="text-gray-700">📧 Email: <a href="mailto:support@quicfin.com" class="text-blue-600 hover:underline">support@quicfin.com</a></p>
+              <p class="text-gray-700">📞 Phone: +91 XXXXX XXXXX</p>
+          </div>
+
+          <p class="text-center text-gray-600 mt-6">Thank you for your prompt attention.</p>
+
+          <p class="text-center text-gray-800 font-semibold mt-2">🏦 QuicFin Support Team</p>
+      </div>
+  </body>
+  </html>`;
   }
 }

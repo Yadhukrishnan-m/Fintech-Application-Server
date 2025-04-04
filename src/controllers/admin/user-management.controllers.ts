@@ -46,9 +46,6 @@ export class UserManagementController {
     try {
       const id = req.params.id;
       const { status,message } = req.body;
-    
-      
-
       const user = await this._userManagementService.verifyUser(
         id,
         status,

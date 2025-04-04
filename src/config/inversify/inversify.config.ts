@@ -19,7 +19,7 @@ import { AuthUserService } from "../../services/user/auth-user.services";
 import { ProfileService } from "../../services/user/user-profile.services";
 
 // Admin Services
-import { AuthAdminService } from "../../services/admin/auth-admin.services"; 
+import { AuthAdminService } from "../../services/admin/auth-admin.services";
 import { UserManagementService } from "../../services/admin/user-management.services";
 
 // User Controllers
@@ -54,6 +54,14 @@ import { TransactionController } from "../../controllers/user/transaction.contro
 import { CapitalAndTransactionController } from "../../controllers/admin/capital-transaction.controllers";
 import { CapitalAndTransactionService } from "../../services/admin/capital-transaction.services";
 import { CapitalRepository } from "../../repositories/capital.repository";
+import { UserLoanManagementController } from "../../controllers/admin/user-loan-management.controllers";
+import { UserLoanManagementService } from "../../services/admin/user-loan-management.services";
+import { NotificationRepository } from "../../repositories/notification.repository";
+import { NotificationController } from "../../controllers/admin/notification.controllers";
+import { NotificationService } from "../../services/helpers/notification.services";
+import { UserNotificationController } from "../../controllers/user/user-notificationController";
+import { NotificationReadRepository } from "../../repositories/notification-read.repository";
+import { EmiReminderService } from "../../services/helpers/nofify-usersforoverdue.services";
 
 // Create the Inversify container
 const container = new Container();
@@ -62,18 +70,26 @@ const container = new Container();
 container.bind<UserRepository>(TYPES.UserRepository).to(UserRepository);
 container.bind<OtpRepository>(TYPES.OtpRepository).to(OtpRepository);
 container.bind<LoanRepository>(TYPES.LoanRepository).to(LoanRepository);
-container.bind<ApplicationRepository>(TYPES.ApplicationRepository).to(ApplicationRepository)
+container
+  .bind<ApplicationRepository>(TYPES.ApplicationRepository)
+  .to(ApplicationRepository);
 container
   .bind<UserLoanRepository>(TYPES.UserLoanRepository)
   .to(UserLoanRepository);
-  container
-    .bind<TransactionRepository>(TYPES.TransactionRepository)
-    .to(TransactionRepository);
+container
+  .bind<TransactionRepository>(TYPES.TransactionRepository)
+  .to(TransactionRepository);
 container
   .bind<CapitalRepository>(TYPES.CapitalRepository)
   .to(CapitalRepository);
+  container
+    .bind<NotificationReadRepository>(TYPES.NotificationReadRepository)
+    .to(NotificationReadRepository);
 // Bind Admin Repositories
 container.bind<AdminRepository>(TYPES.AdminRepository).to(AdminRepository);
+container
+  .bind<NotificationRepository>(TYPES.NotificationRepository)
+  .to(NotificationRepository);
 
 // Bind Common Services
 container.bind<PasswordService>(TYPES.PasswordService).to(PasswordService);
@@ -85,22 +101,24 @@ container.bind<EmiCalculator>(TYPES.EmiCalculator).to(EmiCalculator);
 container
   .bind<InterestCalculator>(TYPES.InterestCalculator)
   .to(InterestCalculator);
-
-
-
+ container.bind<EmiReminderService>(
+   TYPES.EmiReminderService).to(EmiReminderService),
+ 
 // Bind User Services
 container.bind<AuthUserService>(TYPES.AuthUserService).to(AuthUserService);
 container.bind<ProfileService>(TYPES.ProfileService).to(ProfileService);
 container.bind<LoanService>(TYPES.LoanService).to(LoanService);
 container.bind<PaymentService>(TYPES.PaymentService).to(PaymentService);
 container
+  .bind<UserLoanManagementService>(TYPES.UserLoanManagementService)
+  .to(UserLoanManagementService);
+container
   .bind<TransactionService>(TYPES.TransactionService)
   .to(TransactionService);
 container
   .bind<ApplicationService>(TYPES.ApplicationService)
   .to(ApplicationService);
-  container.bind<UserLoanService>(TYPES.UserLoanService).to(UserLoanService);
-
+container.bind<UserLoanService>(TYPES.UserLoanService).to(UserLoanService);
 
 // Bind Admin Services
 container.bind<AuthAdminService>(TYPES.AuthAdminService).to(AuthAdminService);
@@ -117,6 +135,13 @@ container
 container
   .bind<UserManagementService>(TYPES.UserManagementService)
   .to(UserManagementService);
+container
+  .bind<UserLoanManagementController>(TYPES.UserLoanManagementController)
+  .to(UserLoanManagementController);
+
+container
+  .bind<NotificationController>(TYPES.NotificationController)
+  .to(NotificationController);
 
 // Bind User Controllers
 container
@@ -132,30 +157,34 @@ container
 container
   .bind<UserLoanController>(TYPES.UserLoanController)
   .to(UserLoanController);
-  container
-    .bind<PaymentController>(TYPES.PaymentController)
-    .to(PaymentController);
-      container
-        .bind<TransactionController>(TYPES.TransactionController)
-        .to(TransactionController);
+container
+  .bind<PaymentController>(TYPES.PaymentController)
+  .to(PaymentController);
+container
+  .bind<TransactionController>(TYPES.TransactionController)
+  .to(TransactionController);
+container
+  .bind<NotificationService>(TYPES.NotificationService)
+  .to(NotificationService);
+container
+  .bind<UserNotificationController>(TYPES.UserNotificationController)
+  .to(UserNotificationController);
 
 // Bind Admin Controllers
 container
   .bind<AuthAdminController>(TYPES.AuthAdminController)
   .to(AuthAdminController);
-  container
-    .bind<CapitalAndTransactionController>(TYPES.CapitalAndTransactionController)
-    .to(CapitalAndTransactionController);
+container
+  .bind<CapitalAndTransactionController>(TYPES.CapitalAndTransactionController)
+  .to(CapitalAndTransactionController);
 container
   .bind<UserManagementController>(TYPES.UserManagementController)
   .to(UserManagementController);
-  container
-    .bind<LoanManagementController>(TYPES.LoanManagementController)
-    .to(LoanManagementController);
-     container
-       .bind<ApplicationManagementController>(
-         TYPES.ApplicationManagementController
-       )
-       .to(ApplicationManagementController);
+container
+  .bind<LoanManagementController>(TYPES.LoanManagementController)
+  .to(LoanManagementController);
+container
+  .bind<ApplicationManagementController>(TYPES.ApplicationManagementController)
+  .to(ApplicationManagementController);
 
 export { container };

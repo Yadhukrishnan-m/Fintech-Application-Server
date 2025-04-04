@@ -12,6 +12,7 @@ export interface ITransaction extends Document {
   penaltyAmount?: number;
   paymentStatus: string;
   type: string;
+  createdAt?: Date;
 }
 
 export interface ITransactionPopulated {
@@ -23,7 +24,7 @@ export interface ITransactionPopulated {
   penaltyAmount?: number;
   paymentStatus: string;
   type: string;
-
+  createdAt?:Date;
 }
 
 const TransactionSchema = new Schema<ITransaction>(
@@ -51,6 +52,11 @@ const TransactionSchema = new Schema<ITransaction>(
       type: String,
       required: true,
       enum: ["emi", "payout", "capitalDeposit"],
+    },
+    createdAt: {
+      type: Date,
+     
+      
     },
   },
   { timestamps: true }

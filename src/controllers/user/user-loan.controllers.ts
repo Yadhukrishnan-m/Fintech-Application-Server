@@ -41,10 +41,13 @@ export class UserLoanController {
 
   async getUserLoanEmis(req: Request, res: Response, next: NextFunction) {
     try {
-      // const { userId } = req as AuthenticatedRequest;
+      const { userId } = req as AuthenticatedRequest;
       
      const { userLoanId }=req.params
-      const {emiSchedule,userLoan} = await this._userLoanService.getEmis(userLoanId);
+      const { emiSchedule, userLoan } = await this._userLoanService.getEmis(
+        userLoanId,
+        userId
+      );
 
       res.status(STATUS_CODES.CREATED).json({
         message: MESSAGES.CREATED,

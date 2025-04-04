@@ -12,6 +12,7 @@ import { ApplicationController } from "../controllers/user/application.controlle
 import { UserLoanController } from "../controllers/user/user-loan.controllers";
 import { PaymentController } from "../controllers/user/payment.controllers";
 import { TransactionController } from "../controllers/user/transaction.controllers";
+import { UserNotificationController } from "../controllers/user/user-notificationController";
 const authUserController = container.get<AuthUserController>(
   TYPES.AuthUserController
 );
@@ -25,6 +26,7 @@ const paymentController=container.get<PaymentController>(TYPES.PaymentController
 const userLoanController=container.get<UserLoanController>(TYPES.UserLoanController)
 const applicationController=container.get<ApplicationController>(TYPES.ApplicationController)
 const transactionController=container.get<TransactionController>(TYPES.TransactionController)
+const userNotificationController=container.get<UserNotificationController>(TYPES.UserNotificationController)
 const router = express.Router();
 
 router.post("/register", (req: Request, res: Response, next: NextFunction) =>
@@ -84,6 +86,7 @@ router.post(
 );
 router.get(
   "/loans",
+  authenticateUser,
   (req: Request, res: Response, next: NextFunction) =>
     loanController.getLoans(req, res, next)
 );
@@ -143,7 +146,7 @@ router.get(
 );
 router.get(
   "/razorpay/create-order/:userLoanId",
-  // authenticateUser,
+  authenticateUser,//
   (req: Request, res: Response, next: NextFunction) => {
     paymentController.createOrder(req, res, next);
   }
@@ -161,6 +164,28 @@ router.get(
   authenticateUser,
   (req: Request, res: Response, next: NextFunction) => {
     transactionController.getTransactions(req, res, next);
+  }
+);
+router.get(
+  "/get-notifications",
+  authenticateUser,
+  (req: Request, res: Response, next: NextFunction) => {
+    userNotificationController.getNotification(req, res, next);
+  }
+);
+
+router.get(
+  "/notifications-mark-read",
+  authenticateUser,
+  (req: Request, res: Response, next: NextFunction) => {
+    userNotificationController.markUserNotificationsAsRead(req, res, next);
+  }
+)
+router.get(
+  "/total-unreaded",
+  authenticateUser,
+  (req: Request, res: Response, next: NextFunction) => {
+    userNotificationController.totalUnreadNotifications(req, res, next);
   }
 );
 

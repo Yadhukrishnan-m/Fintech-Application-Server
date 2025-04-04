@@ -45,6 +45,11 @@ export class UserRepository
   async findByAadhaarNumber(aadhaarNumber: string): Promise<IUser | null> {
     return await UserModel.findOne({ aadhaarNumber });
   }
+  async findFinscore(userId:string): Promise<number| null> {
+   const user = await UserModel.findOne({ _id: userId }).select("finscore");
+
+  return user?.finscore !== undefined ? user.finscore : null;
+  }
 
   async findByPanNumber(panNumber: string): Promise<IUser | null> {
     return await UserModel.findOne({ panNumber });

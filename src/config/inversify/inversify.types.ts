@@ -1,5 +1,4 @@
-import { UserLoanController } from "../../controllers/user/user-loan.controllers";
-import { UserLoanService } from "../../services/user/user-loan.services";
+import { UserLoanManagementService } from "../../services/admin/user-loan-management.services";
 
 
 export const TYPES = {
@@ -11,7 +10,9 @@ export const TYPES = {
   ApplicationRepository: Symbol.for("ApplicationRepository"),
   UserLoanRepository: Symbol.for("UserLoanRepository"),
   TransactionRepository: Symbol.for("TransactionRepository"),
-  CapitalRepository:Symbol.for("CapitalRepository"),
+  CapitalRepository: Symbol.for("CapitalRepository"),
+  NotificationRepository: Symbol.for("NotificationRepository"),
+  NotificationReadRepository:Symbol.for("NotificationReadRepository"),
   //external services
   PasswordService: Symbol.for("PasswordService"),
   EmailService: Symbol.for("EmailService"),
@@ -20,6 +21,9 @@ export const TYPES = {
   InterestCalculator: Symbol.for("InterestCalculator"),
   EmiCalculator: Symbol.for("EmiCalculator"),
   RazorpayService: Symbol.for("RazorpayService"),
+  // common service
+  NotificationService: Symbol.for("NotificationService"),
+  EmiReminderService:Symbol.for("EmiReminderService"),
   //services
   AuthAdminService: Symbol.for("AuthAdminService"),
   UserManagementService: Symbol.for("UserManagementService"),
@@ -33,8 +37,10 @@ export const TYPES = {
   PaymentService: Symbol.for("PaymentService"),
   TransactionService: Symbol.for("TransactionService"),
   CapitalAndTransactionService: Symbol.for("CapitalAndTransactionService"),
+  UserLoanManagementService: Symbol.for("UserLoanManagementService"),
   // controllers
   AuthAdminController: Symbol.for("AuthAdminController"),
+  UserLoanManagementController: Symbol.for("UserLoanManagementController"),
   LoanManagementController: Symbol.for("LoanManagementController"),
   ApplicationController: Symbol.for("ApplicationController"),
   ApplicationManagementController: Symbol.for(
@@ -50,4 +56,6 @@ export const TYPES = {
   ProfileController: Symbol.for("ProfileController"),
   LoanController: Symbol.for("LoanController"),
   PaymentController: Symbol.for("PaymentController"),
+  NotificationController: Symbol.for("NotificationController"),
+  UserNotificationController: Symbol.for("UserNotificationController"),
 };

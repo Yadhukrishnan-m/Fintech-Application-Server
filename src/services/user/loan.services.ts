@@ -31,7 +31,7 @@ export class LoanService implements ILoanService {
     const pageSize = 5; // Number of loans per page
     const skip = (page - 1) * pageSize; // Calculate skip value for pagination
 
-    let query: any = {};
+   let query: any = { isActive: true };
 
     // Implement search filter
     if (search) {
@@ -44,37 +44,37 @@ export class LoanService implements ILoanService {
     // Default sorting by newest loans
     let sortQuery: any = { createdAt: -1 };
 
-    // Apply sorting based on input
+   
     switch (sortBy) {
       case "name":
-        sortQuery = { name: 1 }; // Sort by Loan Name (A-Z)
+        sortQuery = { name: 1 }; 
         break;
       case "minAmount_low":
-        sortQuery = { minAmount: 1 }; // Min Amount: Low to High
+        sortQuery = { minAmount: 1 }; 
         break;
       case "minAmount_high":
-        sortQuery = { minAmount: -1 }; // Min Amount: High to Low
+        sortQuery = { minAmount: -1 }; 
         break;
       case "maxAmount_low":
-        sortQuery = { maxAmount: 1 }; // Max Amount: Low to High
+        sortQuery = { maxAmount: 1 }; 
         break;
       case "maxAmount_high":
-        sortQuery = { maxAmount: -1 }; // Max Amount: High to Low
+        sortQuery = { maxAmount: -1 }; 
         break;
       case "interest_low":
-        sortQuery = { interest: 1 }; // Min Interest: Low to High
+        sortQuery = { interest: 1 }; 
         break;
       case "interest_high":
-        sortQuery = { interest: -1 }; // Min Interest: High to Low
+        sortQuery = { interest: -1 }; 
         break;
       case "penalty_low":
-        sortQuery = { penalty: 1 }; // Due Penalty: Low to High
+        sortQuery = { penalty: 1 }; 
         break;
       case "penalty_high":
-        sortQuery = { penalty: -1 }; // Due Penalty: High to Low
+        sortQuery = { penalty: -1 }; 
         break;
       default:
-        sortQuery = { createdAt: -1 }; // Default to newest loans first
+        sortQuery = { createdAt: -1 }; 
     }
 
     const { loans, totalPages } = await this._loanRepository.findAllActiveLoans(
@@ -139,11 +139,12 @@ export class LoanService implements ILoanService {
     if (userData.status !== "verified") {
       throw new CustomError("user not verified", STATUS_CODES.UNAUTHORIZED);
     }
-    if (!userData.cibilScore) {
+    if (!userData.cibilScore || !userData.finscore) {
       throw new CustomError(MESSAGES.NOT_FOUND, STATUS_CODES.NOT_FOUND);
     }
     const interest = this._interestCalculator.calculateInterest(
       userData.cibilScore,
+      userData.finscore,
       loanData.minimumInterest,
       loanData.maximumInterest
     );

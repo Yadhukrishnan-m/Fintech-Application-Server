@@ -206,7 +206,6 @@ export class PaymentService implements IPaymentService {
        );
      }
 
-     console.log(`EMI Status: ${emiStatus}, Penalty: ${penalty}`);
 
      // Correct EMI total calculation
      const totalAmount = Number((emi + penalty).toFixed(2));
@@ -250,10 +249,24 @@ export class PaymentService implements IPaymentService {
       penaltyAmount: penalty,
       paymentStatus: "completed" as "completed",
       type: "emi" as "emi",
+      createdAt:today
     };
     const transaction = TransactionModelMapper.toModel(transactionData);
     await this._transactionRepository.create(transaction);
-    await this._capitalRepository.incBalance(totalAmount)
+    await this._capitalRepository.incBalance(totalAmount);
+    const finscore=await this._userRepository.findFinscore(userId)
+    if (finscore==null) {
+      return 
+    }
+   let increaseBy = 0;
+   if (emiStatus=='due') {
+    increaseBy = 5;
+   }else if(emiStatus=='grace'){
+    increaseBy = 2;
+   }
+   const updatedFinscore = Math.min(finscore + increaseBy, 100);
+   await this._userRepository.updateById(userId,{finscore:updatedFinscore})
+    
   }
 }
  

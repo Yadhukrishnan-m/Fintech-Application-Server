@@ -13,6 +13,7 @@ export interface IUserLoanService {
     totalUserLoans: number;
   }>;
   getEmis(
-    userLoanId: String
+    userLoanId: String,
+    userId:string
   ): Promise<{ emiSchedule: IEmi[]; userLoan: IUserLoan }>;
 }

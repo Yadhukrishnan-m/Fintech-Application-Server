@@ -57,5 +57,4 @@ export class EmiCalculator implements IEmiCalculator {
   return parseFloat(totalPenalty.toFixed(2));
 }
 
-
 }

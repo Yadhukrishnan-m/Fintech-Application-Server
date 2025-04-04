@@ -8,11 +8,16 @@ import { IUser } from "../../models/user.model";
 import { CustomError } from "../../utils/custom-error";
 import { injectable, inject } from "inversify";
 import { TYPES } from "../../config/inversify/inversify.types";
+import { INotificationRepository } from "../../interfaces/repositories/notification.repository.interface";
+import { INotification } from "../../models/notification.model";
+import { getIO, getUserSocket } from "../../config/socket";
 @injectable()
 export class UserManagementService implements IUserManagementService {
   constructor(
     @inject(TYPES.UserRepository) private _userRepository: IUserRepository,
-    @inject(TYPES.UploadToS3) private _uploadToS3: IUploadToS3
+    @inject(TYPES.UploadToS3) private _uploadToS3: IUploadToS3,
+        @inject(TYPES.NotificationRepository)
+        private _notificationRepository: INotificationRepository,
   ) {}
 
   async getUnverifiedUsers(
@@ -117,6 +122,43 @@ export class UserManagementService implements IUserManagementService {
       message: message? message:''
     };
     await this._userRepository.updateById(id, userData);
+    if (userData.status=='verified') {
+       const verifiedNotification: Partial<INotification> = {
+         title: "Profile Verification Success",
+         message:
+           "Dear user, your profile has been verified. You can now successfully apply for loans.",
+         type: "personal",
+         userId: id,
+       };
+
+       await this._notificationRepository.create(verifiedNotification);
+
+        const io = getIO();
+        const userSocketId = getUserSocket(id);
+        if (userSocketId) {
+          io.to(userSocketId).emit("new_notification", verifiedNotification);
+        }
+    }else{
+           const rejectedProfileNotification: Partial<INotification> = {
+             title: "Profile Verification Success",
+             message:
+               `Dear user, your profile has been rejected .The reason for rejection is : '${message}'  `,
+             type: "personal",
+             userId: id,
+           };
+
+           await this._notificationRepository.create(
+             rejectedProfileNotification
+           );
+           const io = getIO();
+           const userSocketId = getUserSocket(id);
+                 if (userSocketId) {
+                   io.to(userSocketId).emit(
+                     "new_notification",
+                     rejectedProfileNotification
+                   );
+                 }
+    }
   }
   async blacklistUser(id: string, action: boolean): Promise<void> {
     const userData = {

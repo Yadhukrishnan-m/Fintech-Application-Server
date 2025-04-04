@@ -1,5 +1,5 @@
 
-import { IUserLoan } from "../../models/user-loan.model";
+import { IUserLoan, IUserLoanPopulated } from "../../models/user-loan.model";
 import { IBaseRepository } from "./base.repository.interface";
 
 export interface IUserLoanRepository extends IBaseRepository<IUserLoan> {
@@ -10,5 +10,13 @@ export interface IUserLoanRepository extends IBaseRepository<IUserLoan> {
     userId: string
   ): Promise<IUserLoan[] | null>;
   countDocuments(query: any): Promise<number>;
+  getAllUserLoans(
+    query:any,
+    sortQuery: any,
+    skip: number,
+    pageSize: number,
+   
+  ): Promise <IUserLoan[] | null>;
+  getUserLoansOfSingleUser(userId:string):Promise<IUserLoan[]>
 }
  

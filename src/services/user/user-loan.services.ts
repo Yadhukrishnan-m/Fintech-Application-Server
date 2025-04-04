@@ -52,13 +52,17 @@ export class UserLoanService implements IUserLoanService {
     };
   }
   async getEmis(
-    userLoanId: string
+    userLoanId: string,
+    userId:string
   ): Promise<{ emiSchedule: IEmi[]; userLoan: IUserLoan }> {
     const userLoan: IUserLoan | null = await this._userLoanRepository.findById(
       userLoanId
     );
     if (!userLoan) {
       throw new CustomError(MESSAGES.NOT_FOUND, STATUS_CODES.NOT_FOUND);
+    }
+    if (userLoan.userId.toString()!==userId) {
+      throw new CustomError(MESSAGES.BAD_REQUEST, STATUS_CODES.BAD_REQUEST);
     }
 
     const transactions: ITransaction[] | null =
@@ -79,10 +83,10 @@ export class UserLoanService implements IUserLoanService {
 
     const emiSchedule = [];
 
-   const rawDueDate = new Date(userLoan.createdAt); // Get the loan creation date
-   const startingDueDate = new Date(rawDueDate); // Clone the original date
-   startingDueDate.setHours(0, 0, 0, 0);
-   startingDueDate.setMonth(startingDueDate.getMonth() + 1);
+    const rawDueDate = new Date(userLoan.createdAt); // Get the loan creation date
+    const startingDueDate = new Date(rawDueDate); // Clone the original date
+    startingDueDate.setHours(0, 0, 0, 0);
+    startingDueDate.setMonth(startingDueDate.getMonth() + 1);
 
     let hasUnpaidEMI = false;
 
@@ -118,8 +122,8 @@ export class UserLoanService implements IUserLoanService {
 
       if (isPaid) {
         emiStatus = "paid";
-     
-       penalty=isPaid ? paidTransactions.get(i)?.penaltyAmount || 0:0
+
+        penalty = isPaid ? paidTransactions.get(i)?.penaltyAmount || 0 : 0;
       } else if (today < thisEmiDueDate) {
         emiStatus = "upcoming";
       } else if (isExactDueDate) {
@@ -130,8 +134,7 @@ export class UserLoanService implements IUserLoanService {
         canPay = !hasUnpaidEMI;
       } else {
         emiStatus = "overdue";
-        
-        
+
         penalty = this._emiCalculator.calculatePenalty(
           emi,
           userLoan.duePenalty,
@@ -141,7 +144,7 @@ export class UserLoanService implements IUserLoanService {
         canPay = !hasUnpaidEMI;
         hasUnpaidEMI = true;
       }
-   
+
       emiSchedule.push({
         emiNumber: i,
         amount: emi,
