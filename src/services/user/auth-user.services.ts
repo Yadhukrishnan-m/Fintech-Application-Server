@@ -210,7 +210,7 @@ export class AuthUserService implements IAuthUserService {
       currentPassword,
       user.password
     );
-    console.log(currentPassword);
+  
    
     if (!isCurrentPasswordTrue) {
         throw new CustomError(

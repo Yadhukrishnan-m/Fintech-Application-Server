@@ -10,7 +10,7 @@ import { IUserRepository } from "../../interfaces/repositories/user.repository.i
 import { CustomError } from "../../utils/custom-error";
 import { IUser } from "../../models/user.model";
 import { INotification } from "../../models/notification.model";
-import { getIO, getUserSocket } from "../../config/socket";
+import { getIO, getUserSocket, userSocketMap } from "../../config/socket";
 import { error } from "console";
 import { IReadStatus } from "../../models/notification-read.modal";
 import mongoose from "mongoose";
@@ -50,10 +50,14 @@ export class NotificationService implements INotificationService {
     await this._notificationRepository.create(notification);
 
     const io = getIO();
+     console.log("All Socket Mappings:", Array.from(userSocketMap.entries()));
 
     if (userMongoseId?._id) {
-      const userSocketId = getUserSocket(userMongoseId._id);
+      const userSocketId = getUserSocket(userMongoseId._id.toString());
+        console.log(userSocketId);
+     
       if (userSocketId) {
+        
         io.to(userSocketId).emit("new_notification", notification);
       }
     } else {

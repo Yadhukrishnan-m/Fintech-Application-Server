@@ -23,6 +23,8 @@ const authenticateAdmin = (
     ) as JwtPayload;
 
     req.adminId = decoded._id._id || decoded._id;
+ 
+    
 
     // console.log('userid is '+req.userId);
 

@@ -33,6 +33,8 @@ export class ApplicationService implements IApplicationService {
   ): Promise<void> {
     const { loanId, amount, tenure, documents, accountNumber, ifscCode } =
       applicationData;
+      
+      
 
     if (!loanId || !amount || !tenure) {
       throw new CustomError(MESSAGES.BAD_REQUEST, STATUS_CODES.BAD_REQUEST);
@@ -43,7 +45,6 @@ export class ApplicationService implements IApplicationService {
         return { [file.fieldname]: s3Key };
       })
     );
-
     const loanDetails: ILoan | null = await this._loanRepository.findById(
       loanId
     );
@@ -67,16 +68,21 @@ export class ApplicationService implements IApplicationService {
       !userDetails ||
       !userDetails.cibilScore ||
       !loanDetails.gracePeriod ||
-      !userDetails.finscore
+      userDetails.finscore==null
     ) {
+
+
       throw new CustomError(MESSAGES.NOT_FOUND, STATUS_CODES.NOT_FOUND);
     }
+
     if (
       amount < loanDetails.minimumAmount ||
       amount > loanDetails.maximumAmount ||
       tenure < loanDetails.minimumTenure ||
       tenure > loanDetails.maximumTenure
     ) {
+    
+      
       throw new CustomError(MESSAGES.BAD_REQUEST, STATUS_CODES.BAD_REQUEST);
     }
 
@@ -104,6 +110,8 @@ export class ApplicationService implements IApplicationService {
       userId,
       uploadedDocuments
     );
+ 
+    
     await this._applicationRepository.create(newApplication);
   }
 

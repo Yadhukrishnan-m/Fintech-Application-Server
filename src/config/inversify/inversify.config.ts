@@ -62,6 +62,11 @@ import { NotificationService } from "../../services/helpers/notification.service
 import { UserNotificationController } from "../../controllers/user/user-notificationController";
 import { NotificationReadRepository } from "../../repositories/notification-read.repository";
 import { EmiReminderService } from "../../services/helpers/nofify-usersforoverdue.services";
+import { ChatRepository } from "../../repositories/chat.repository";
+import { MessageRepository } from "../../repositories/message.repository";
+import { ChatService } from "../../services/helpers/chat.services";
+import { UserChatController } from "../../controllers/user/userChat.controllers";
+import { AdminChatController } from "../../controllers/admin/adminChat.controllers";
 
 // Create the Inversify container
 const container = new Container();
@@ -82,9 +87,15 @@ container
 container
   .bind<CapitalRepository>(TYPES.CapitalRepository)
   .to(CapitalRepository);
-  container
-    .bind<NotificationReadRepository>(TYPES.NotificationReadRepository)
-    .to(NotificationReadRepository);
+container
+  .bind<NotificationReadRepository>(TYPES.NotificationReadRepository)
+  .to(NotificationReadRepository);
+
+container.bind<ChatRepository>(TYPES.ChatRepository).to(ChatRepository);
+container
+  .bind<MessageRepository>(TYPES.MessageRepository)
+  .to(MessageRepository);
+
 // Bind Admin Repositories
 container.bind<AdminRepository>(TYPES.AdminRepository).to(AdminRepository);
 container
@@ -101,11 +112,12 @@ container.bind<EmiCalculator>(TYPES.EmiCalculator).to(EmiCalculator);
 container
   .bind<InterestCalculator>(TYPES.InterestCalculator)
   .to(InterestCalculator);
- container.bind<EmiReminderService>(
-   TYPES.EmiReminderService).to(EmiReminderService),
- 
-// Bind User Services
-container.bind<AuthUserService>(TYPES.AuthUserService).to(AuthUserService);
+container
+  .bind<EmiReminderService>(TYPES.EmiReminderService)
+  .to(EmiReminderService),
+  container.bind<ChatService>(TYPES.ChatService).to(ChatService),
+  // Bind User Services
+  container.bind<AuthUserService>(TYPES.AuthUserService).to(AuthUserService);
 container.bind<ProfileService>(TYPES.ProfileService).to(ProfileService);
 container.bind<LoanService>(TYPES.LoanService).to(LoanService);
 container.bind<PaymentService>(TYPES.PaymentService).to(PaymentService);
@@ -169,6 +181,9 @@ container
 container
   .bind<UserNotificationController>(TYPES.UserNotificationController)
   .to(UserNotificationController);
+  container
+    .bind<UserChatController>(TYPES.UserChatController)
+    .to(UserChatController);
 
 // Bind Admin Controllers
 container
@@ -186,5 +201,8 @@ container
 container
   .bind<ApplicationManagementController>(TYPES.ApplicationManagementController)
   .to(ApplicationManagementController);
+  container
+    .bind<AdminChatController>(TYPES.AdminChatController)
+    .to(AdminChatController);
 
 export { container };

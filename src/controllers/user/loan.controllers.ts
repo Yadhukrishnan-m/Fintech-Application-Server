@@ -55,6 +55,8 @@ export class LoanController {
     try {
       const { loanId } = req.params;
       const { userId } = req as AuthenticatedRequest;
+      
+      
       const interest = await this._loanService.getInterest(userId, loanId);
       
       res.status(STATUS_CODES.OK).json({

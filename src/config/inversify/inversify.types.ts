@@ -12,7 +12,9 @@ export const TYPES = {
   TransactionRepository: Symbol.for("TransactionRepository"),
   CapitalRepository: Symbol.for("CapitalRepository"),
   NotificationRepository: Symbol.for("NotificationRepository"),
-  NotificationReadRepository:Symbol.for("NotificationReadRepository"),
+  NotificationReadRepository: Symbol.for("NotificationReadRepository"),
+  ChatRepository: Symbol.for("ChatRepository"),
+  MessageRepository: Symbol.for("MessageRepository"),
   //external services
   PasswordService: Symbol.for("PasswordService"),
   EmailService: Symbol.for("EmailService"),
@@ -23,7 +25,8 @@ export const TYPES = {
   RazorpayService: Symbol.for("RazorpayService"),
   // common service
   NotificationService: Symbol.for("NotificationService"),
-  EmiReminderService:Symbol.for("EmiReminderService"),
+  EmiReminderService: Symbol.for("EmiReminderService"),
+  ChatService: Symbol.for("ChatService"),
   //services
   AuthAdminService: Symbol.for("AuthAdminService"),
   UserManagementService: Symbol.for("UserManagementService"),
@@ -58,4 +61,6 @@ export const TYPES = {
   PaymentController: Symbol.for("PaymentController"),
   NotificationController: Symbol.for("NotificationController"),
   UserNotificationController: Symbol.for("UserNotificationController"),
+  UserChatController: Symbol.for("UserChatController"),
+  AdminChatController:Symbol.for("AdminChatController")
 };

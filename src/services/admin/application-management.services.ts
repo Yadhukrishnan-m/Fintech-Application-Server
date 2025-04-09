@@ -23,6 +23,8 @@ import { ICapitalRepository } from "../../interfaces/repositories/capital.reposi
 import { INotification } from "../../models/notification.model";
 import { INotificationRepository } from "../../interfaces/repositories/notification.repository.interface";
 import { getIO, getUserSocket } from "../../config/socket";
+import { stat } from "fs";
+
 @injectable()
 export class ApplicationManagementService
   implements IApplicationManagementService
@@ -109,10 +111,32 @@ export class ApplicationManagementService
     return applicationData;
   }
 
+
   async verifyApplication(
     applicationId: string,
     statusAndMessage: verifyApplicationDTO
   ): Promise<void> {
+
+    const application=await this._applicationRepository.findById(applicationId);
+    if (!application) {
+      throw new CustomError(MESSAGES.NOT_FOUND,STATUS_CODES.NOT_FOUND)
+    }
+          const capitalAmount = await this._capitalRepository.findOne({});
+          if (
+            Number(capitalAmount?.availableBalance) <
+            Number(application.amount)
+
+            && statusAndMessage.status==='approved'
+          ) {
+            throw new CustomError(
+              "Insufficient Capital",
+              STATUS_CODES.BAD_REQUEST
+            );
+          }
+
+
+
+
     const applicationData = await this._applicationRepository.updateById(
       applicationId,
       statusAndMessage
@@ -169,12 +193,7 @@ export class ApplicationManagementService
         "Loan Approved",
         content
       );
-      const capitalAmount = await this._capitalRepository.findOne({});
-      if (
-        Number(capitalAmount?.availableBalance) < Number(applicationData.amount)
-      ) {
-        throw new CustomError("Insufficient Capital", STATUS_CODES.BAD_REQUEST);
-      }
+
       await this._capitalRepository.decBalance(applicationData.amount);
 
       const rejectedProfileNotification: Partial<INotification> = {

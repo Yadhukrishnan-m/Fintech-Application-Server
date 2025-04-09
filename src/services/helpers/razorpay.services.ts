@@ -59,7 +59,7 @@ export class RazorpayService implements IRazorpayService {
   }
 
   async createOrder(amount: number): Promise<IRazorpayOrder> {
-    console.log(amount * 100);
+ 
     const options = {
       amount: Number(amount * 100).toFixed(0), // Convert amount to paise
       currency: "INR",

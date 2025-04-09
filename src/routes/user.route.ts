@@ -13,6 +13,7 @@ import { UserLoanController } from "../controllers/user/user-loan.controllers";
 import { PaymentController } from "../controllers/user/payment.controllers";
 import { TransactionController } from "../controllers/user/transaction.controllers";
 import { UserNotificationController } from "../controllers/user/user-notificationController";
+import { UserChatController } from "../controllers/user/userChat.controllers";
 const authUserController = container.get<AuthUserController>(
   TYPES.AuthUserController
 );
@@ -27,6 +28,7 @@ const userLoanController=container.get<UserLoanController>(TYPES.UserLoanControl
 const applicationController=container.get<ApplicationController>(TYPES.ApplicationController)
 const transactionController=container.get<TransactionController>(TYPES.TransactionController)
 const userNotificationController=container.get<UserNotificationController>(TYPES.UserNotificationController)
+const userChatController=container.get<UserChatController>(TYPES.UserChatController)
 const router = express.Router();
 
 router.post("/register", (req: Request, res: Response, next: NextFunction) =>
@@ -188,6 +190,19 @@ router.get(
     userNotificationController.totalUnreadNotifications(req, res, next);
   }
 );
+
+router.get("/get-chat",authenticateUser,(req:Request,res:Response,next:NextFunction)=>{
+  userChatController.getOrCreateChat(req,res,next)
+})
+router.post(
+  "/send-message",
+  authenticateUser,
+  (req: Request, res: Response, next: NextFunction) => {
+    userChatController.sendMessage(req, res, next);
+  }
+);
+
+
 
 export default router;
   

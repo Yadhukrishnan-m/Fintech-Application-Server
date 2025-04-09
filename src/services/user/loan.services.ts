@@ -136,10 +136,14 @@ export class LoanService implements ILoanService {
     if (!userData || !loanData) {
       throw new CustomError(MESSAGES.NOT_FOUND, STATUS_CODES.NOT_FOUND);
     }
+    
+    
     if (userData.status !== "verified") {
+      
+      
       throw new CustomError("user not verified", STATUS_CODES.UNAUTHORIZED);
     }
-    if (!userData.cibilScore || !userData.finscore) {
+    if (!userData.cibilScore || (userData.finscore==null || undefined)) {
       throw new CustomError(MESSAGES.NOT_FOUND, STATUS_CODES.NOT_FOUND);
     }
     const interest = this._interestCalculator.calculateInterest(
@@ -148,6 +152,7 @@ export class LoanService implements ILoanService {
       loanData.minimumInterest,
       loanData.maximumInterest
     );
+
 
     return interest;
   }

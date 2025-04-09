@@ -202,7 +202,7 @@ export class EmailService implements IEmailService {
             <!-- Footer -->
             <tr>
               <td align="center" style="padding-top: 30px;">
-                <a href="https://quicfin.com" style="background: #008080; color: #ffffff; padding: 12px 25px; text-decoration: none; font-size: 16px; border-radius: 5px; display: inline-block;">
+                <a href="http://localhost:5173/dashboard/loans" style="background: #008080; color: #ffffff; padding: 12px 25px; text-decoration: none; font-size: 16px; border-radius: 5px; display: inline-block;">
                   Visit QuicFin
                 </a>
               </td>

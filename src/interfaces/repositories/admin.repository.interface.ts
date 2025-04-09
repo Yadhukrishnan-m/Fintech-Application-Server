@@ -1,6 +1,6 @@
 import { IAdmin } from "../../models/admin.model";
-
-export interface IAdminRepository {
+import { IBaseRepository } from "./base.repository.interface";
+export interface IAdminRepository  extends IBaseRepository<IAdmin> {
   findByEmail(email: string): Promise<IAdmin | null>;
 }
  

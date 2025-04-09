@@ -12,6 +12,7 @@ import { ICapitalAndTransactionService } from "../../interfaces/services/capital
 import { ICapitalRepository } from "../../interfaces/repositories/capital.repository.interface";
 import { ICapital } from "../../models/capital.model";
 import { TransactionModelMapper } from "../../utils/mappers/transaction-mapper";
+import { today } from "../../config/testDate";
 @injectable()
 export class CapitalAndTransactionService
   implements ICapitalAndTransactionService
@@ -100,11 +101,13 @@ export class CapitalAndTransactionService
      amount: number;
      paymentStatus: "pending" | "completed" | "failed";
      type: "emi" | "capitalDeposit";
+     createdAt:Date
    } = {
      transactionId: Math.random().toString(36).substring(2, 20),
      amount: amount,
-     paymentStatus: "completed", 
+     paymentStatus: "completed",
      type: "capitalDeposit",
+     createdAt: today,
    };
     const transaction = TransactionModelMapper.toModel(transactionData);
     await this._transactionRepository.create(transaction)

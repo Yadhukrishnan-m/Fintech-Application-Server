@@ -22,7 +22,7 @@ export class AuthAdminService implements IAuthAdminService {
     const adminData: IAdmin | null = await this._adminrepository.findByEmail(
       adminCredential.email
     );
-  
+   
     
     if (!adminData) {
       throw new CustomError(

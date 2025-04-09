@@ -26,7 +26,7 @@ export class ApplicationController {
   async createApplication(req: Request, res: Response, next: NextFunction) {
     try {
       const { loanId, amount, tenure, accountNumber, ifscCode } = req.body;
-      console.log(req.body);
+      
 
       const { userId } = req as AuthenticatedRequest;
       const applicationData: ApplicationDto = {

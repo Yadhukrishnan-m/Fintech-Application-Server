@@ -11,6 +11,7 @@ import { ApplicationManagementController } from "../controllers/admin/applicatio
 import { CapitalAndTransactionController } from "../controllers/admin/capital-transaction.controllers";
 import { UserLoanManagementController } from "../controllers/admin/user-loan-management.controllers";
 import { NotificationController } from "../controllers/admin/notification.controllers";
+import { AdminChatController } from "../controllers/admin/adminChat.controllers";
 
 const authAdminController = container.get<AuthAdminController>(
   TYPES.AuthAdminController
@@ -21,6 +22,7 @@ const userManagementController = container.get<UserManagementController>(
 const loanManagementController = container.get<LoanManagementController>(
   TYPES.LoanManagementController
 );
+const adminChatController=container.get<AdminChatController>(TYPES.AdminChatController)
 
 const notificationController=container.get<NotificationController>(TYPES.NotificationController)
 const userLoanManagementController=container.get<UserLoanManagementController>(TYPES.UserLoanManagementController)
@@ -163,16 +165,40 @@ router.get(
 
 router.get(
   "/user/user-loans/:userId",
-  // authenticateAdmin,
+  authenticateAdmin,
   (req: Request, res: Response, next: NextFunction) => {
     userLoanManagementController.getUserLoansOfSingleUser(req, res, next);
   }
 );
 router.post (
   "/create-notification",
-  // authenticateAdmin,
+  authenticateAdmin,
   (req: Request, res: Response, next: NextFunction) => {
     notificationController.createNotification(req, res, next);
+  }
+);
+
+router.get(
+  "/all-chats",
+  authenticateAdmin,
+  (req: Request, res: Response, next: NextFunction) => {
+  adminChatController.getAllChats(req, res, next);
+  }
+);
+
+router.post(
+  "/send-message",
+  authenticateAdmin,
+  (req: Request, res: Response, next: NextFunction) => {
+    adminChatController.sendMessage(req, res, next);
+  }
+);
+
+router.get(
+  "/get-chat/:userId",
+  authenticateAdmin,
+  (req: Request, res: Response, next: NextFunction) => {
+    adminChatController.getOrCreateChat(req, res, next);
   }
 );
 

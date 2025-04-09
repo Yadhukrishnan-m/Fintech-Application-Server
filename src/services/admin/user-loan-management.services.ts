@@ -61,6 +61,12 @@ export class UserLoanManagementService implements IUserLoanManagementService {
       case "oldest":
         sortQuery = { createdAt: 1 };
         break;
+      case "interest_desc":
+        sortQuery = { interest: -1 };
+        break;
+      case "interest_asc":
+        sortQuery = { interest: 1 };
+        break;
       default:
         sortQuery = { createdAt: -1 };
         break;

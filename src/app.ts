@@ -28,6 +28,8 @@ app.use('/',userRoutes)
 app.use("/admin", adminRoutes);
 
 
+
+
 // global error handlint middleware
 app.use(ErrorHandler.handleError);
 export default app
