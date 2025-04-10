@@ -67,6 +67,9 @@ import { MessageRepository } from "../../repositories/message.repository";
 import { ChatService } from "../../services/helpers/chat.services";
 import { UserChatController } from "../../controllers/user/userChat.controllers";
 import { AdminChatController } from "../../controllers/admin/adminChat.controllers";
+import { DashboardController } from "../../controllers/admin/dashboard.controllers";
+import { DashboardService } from "../../services/admin/dashboard.services";
+import { ReportService } from "../../services/helpers/reportService";
 
 // Create the Inversify container
 const container = new Container();
@@ -116,6 +119,7 @@ container
   .bind<EmiReminderService>(TYPES.EmiReminderService)
   .to(EmiReminderService),
   container.bind<ChatService>(TYPES.ChatService).to(ChatService),
+  container.bind<ReportService>(TYPES.ReportService).to(ReportService),
   // Bind User Services
   container.bind<AuthUserService>(TYPES.AuthUserService).to(AuthUserService);
 container.bind<ProfileService>(TYPES.ProfileService).to(ProfileService);
@@ -154,6 +158,7 @@ container
 container
   .bind<NotificationController>(TYPES.NotificationController)
   .to(NotificationController);
+  container.bind<DashboardService>(TYPES.DashboardService).to(DashboardService);
 
 // Bind User Controllers
 container
@@ -204,5 +209,9 @@ container
   container
     .bind<AdminChatController>(TYPES.AdminChatController)
     .to(AdminChatController);
+
+      container
+        .bind<DashboardController>(TYPES.DashboardController)
+        .to(DashboardController);
 
 export { container };

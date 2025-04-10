@@ -9,11 +9,13 @@ import { CustomError } from "../../utils/custom-error";
 import { injectable, inject } from "inversify";
 import { TYPES } from "../../config/inversify/inversify.types";
 import { redisClient } from "../../config/redis";
+import { IEmailService } from "../../interfaces/helpers/email-service.service.interface";
 @injectable()
 export class ProfileService implements IProfileService {
   constructor(
     @inject(TYPES.UserRepository) private _userRepository: IUserRepository,
-    @inject(TYPES.UploadToS3) private _uploadToS3: IUploadToS3
+    @inject(TYPES.UploadToS3) private _uploadToS3: IUploadToS3,
+    @inject(TYPES.EmailService) private _emailService: IEmailService
   ) {}
 
   async getUser(userId: string): Promise<IUser> {
@@ -72,5 +74,18 @@ export class ProfileService implements IProfileService {
       userId,
       updatedUser
     );
+  }
+
+  async contactUs(
+    firstName: string,
+    lastName: string,
+    email: string,
+    phone: string,
+    message: string
+  ): Promise<void> {
+    const content=this._emailService.generateContactUsEmailContent( firstName,lastName,email,phone,message)
+    await this._emailService.sendEmail("yadhumon2003@gmail.com","User Enquiry",content)
+
+
   }
 }

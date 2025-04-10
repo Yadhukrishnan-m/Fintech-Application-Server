@@ -41,12 +41,52 @@ export class ApplicationRepository
     sortQuery: any,
     skip: number,
     pageSize: number,
-    userId:string
-  ){
-    return await ApplicationModel.find({userId:userId})
+    userId: string
+  ) {
+    return await ApplicationModel.find({ userId: userId })
       .sort(sortQuery)
       .skip(skip)
       .limit(pageSize)
       .lean();
+  }
+
+  async getApplicationCount(): Promise<{
+    total: number;
+    approved: number;
+    rejected: number;
+    pending: number;
+  }> {
+    const total = await ApplicationModel.countDocuments();
+    const approved = await ApplicationModel.countDocuments({
+      status: "approved",
+    });
+    const rejected = await ApplicationModel.countDocuments({
+      status: "rejected",
+    });
+    const pending = await ApplicationModel.countDocuments({
+      status: "pending",
+    });
+
+    return {
+      total,
+      approved,
+      rejected,
+      pending,
+    };
+  }
+
+  async applicationChartData(
+    pipeline: any
+  ): Promise<
+    {
+      _id: string;
+      name: string;
+      total: string;
+      approved: string;
+      rejected: string;
+    }[]
+  > {
+    const result = await ApplicationModel.aggregate(pipeline);
+    return result;
   }
 }

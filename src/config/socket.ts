@@ -42,7 +42,7 @@ export const initializeSocket = (server: HttpServer) => {
         chat_id: roomId,
       });
 
-      // ✅ Send to room
+   
     });
 
 
@@ -70,7 +70,7 @@ export const getIO = () => {
     throw new Error("Socket.io not initialized!");
   }
   return io;
-};
+}; 
 
 export const getUserSocket = (userId: string) => {
   return userSocketMap.get(userId); // Get user's socket ID

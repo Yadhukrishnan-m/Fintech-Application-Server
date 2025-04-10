@@ -13,6 +13,7 @@ import { initializeSocket } from './config/socket';
 import { container } from './config/inversify/inversify.config';
 import { EmiReminderService } from './services/helpers/nofify-usersforoverdue.services';
 import { TYPES } from './config/inversify/inversify.types';
+import path from 'path';
 app.use(
   cors({
     origin: "http://localhost:5173", 
@@ -20,6 +21,8 @@ app.use(
   })
 );
 container.get<EmiReminderService>(TYPES.EmiReminderService);
+
+
 
 app.use(morgan("dev"));
 app.use(express.json())

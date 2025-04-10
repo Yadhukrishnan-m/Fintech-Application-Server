@@ -11,12 +11,17 @@ export interface IUserLoanRepository extends IBaseRepository<IUserLoan> {
   ): Promise<IUserLoan[] | null>;
   countDocuments(query: any): Promise<number>;
   getAllUserLoans(
-    query:any,
+    query: any,
     sortQuery: any,
     skip: number,
-    pageSize: number,
-   
-  ): Promise <IUserLoan[] | null>;
-  getUserLoansOfSingleUser(userId:string):Promise<IUserLoan[]>
+    pageSize: number
+  ): Promise<IUserLoan[] | null>;
+  getUserLoansOfSingleUser(userId: string): Promise<IUserLoan[]>;
+  getTotalLoanAmount(): Promise<number>;
+  getTotalUserLoanCount(): Promise<number>;
+  getLoansBetweenDates(
+      startDate: Date,
+      endDate: Date
+    ): Promise<IUserLoan[]>
 }
  

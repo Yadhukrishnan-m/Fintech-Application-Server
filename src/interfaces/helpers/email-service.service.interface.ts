@@ -7,11 +7,18 @@ export interface IEmailService {
   generateOtpEmailContent(otp: number): string;
   generateResetPasswordEmailContent(resetLink: string): string;
   generateLoanApprovalEmail(data: loanContentDTO): string;
-  generateLoanRejectionEmail(data: loanContentDTO):string;
+  generateLoanRejectionEmail(data: loanContentDTO): string;
+  generateContactUsEmailContent(
+    firstName: string,
+    lastName: string,
+    email: string,
+    phone: string,
+    message: string
+  ): string;
   generateOverdueEmiEmailContent(
-      user: IUser,
-      userLoan: IUserLoan,
-      overdueEmiCount: number,
-      totalPenalty: number
-    ): string 
+    user: IUser,
+    userLoan: IUserLoan,
+    overdueEmiCount: number,
+    totalPenalty: number
+  ): string;
 }

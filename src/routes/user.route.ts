@@ -168,6 +168,8 @@ router.get(
     transactionController.getTransactions(req, res, next);
   }
 );
+
+
 router.get(
   "/get-notifications",
   authenticateUser,
@@ -191,9 +193,17 @@ router.get(
   }
 );
 
+router.post(
+  "/contact-us",
+  (req: Request, res: Response, next: NextFunction) => {
+    profileController.contactUs(req, res, next);
+  }
+);
+
 router.get("/get-chat",authenticateUser,(req:Request,res:Response,next:NextFunction)=>{
   userChatController.getOrCreateChat(req,res,next)
 })
+
 router.post(
   "/send-message",
   authenticateUser,

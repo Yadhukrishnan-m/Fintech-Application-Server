@@ -27,6 +27,7 @@ export const TYPES = {
   NotificationService: Symbol.for("NotificationService"),
   EmiReminderService: Symbol.for("EmiReminderService"),
   ChatService: Symbol.for("ChatService"),
+  ReportService:Symbol.for("ReportService"),
   //services
   AuthAdminService: Symbol.for("AuthAdminService"),
   UserManagementService: Symbol.for("UserManagementService"),
@@ -41,6 +42,7 @@ export const TYPES = {
   TransactionService: Symbol.for("TransactionService"),
   CapitalAndTransactionService: Symbol.for("CapitalAndTransactionService"),
   UserLoanManagementService: Symbol.for("UserLoanManagementService"),
+  DashboardService:Symbol.for("DashboardService"),
   // controllers
   AuthAdminController: Symbol.for("AuthAdminController"),
   UserLoanManagementController: Symbol.for("UserLoanManagementController"),
@@ -62,5 +64,6 @@ export const TYPES = {
   NotificationController: Symbol.for("NotificationController"),
   UserNotificationController: Symbol.for("UserNotificationController"),
   UserChatController: Symbol.for("UserChatController"),
-  AdminChatController:Symbol.for("AdminChatController")
+  AdminChatController: Symbol.for("AdminChatController"),
+  DashboardController: Symbol.for("DashboardController"),
 };

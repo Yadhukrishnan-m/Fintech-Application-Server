@@ -12,6 +12,7 @@ import { CapitalAndTransactionController } from "../controllers/admin/capital-tr
 import { UserLoanManagementController } from "../controllers/admin/user-loan-management.controllers";
 import { NotificationController } from "../controllers/admin/notification.controllers";
 import { AdminChatController } from "../controllers/admin/adminChat.controllers";
+import { DashboardController } from "../controllers/admin/dashboard.controllers";
 
 const authAdminController = container.get<AuthAdminController>(
   TYPES.AuthAdminController
@@ -28,6 +29,10 @@ const notificationController=container.get<NotificationController>(TYPES.Notific
 const userLoanManagementController=container.get<UserLoanManagementController>(TYPES.UserLoanManagementController)
 const applicationManagementControlelr=container.get<ApplicationManagementController>(TYPES.ApplicationManagementController)
 const capitalAndTransaction =container.get<CapitalAndTransactionController>(TYPES.CapitalAndTransactionController)
+const dashboardController = container.get<DashboardController>(
+  TYPES.DashboardController
+);
+
   container.get<ApplicationManagementController>(
     TYPES.ApplicationManagementController
   );
@@ -203,6 +208,38 @@ router.get(
 );
 
 
+router.get(
+  "/dashboard/get-totals",
+  authenticateAdmin,
+
+  (req: Request, res: Response, next: NextFunction) => {
+    dashboardController.getTotals(req, res, next);
+  }
+);
+
+router.get(
+  "/dashboard/application-chart/:timeFrame",
+  authenticateAdmin,
+
+  (req: Request, res: Response, next: NextFunction) => {
+    dashboardController.applicationChart(req, res, next);
+  }
+);
+router.get(
+  "/dashboard/transaction-chart/:timeFrame",
+  authenticateAdmin,
+
+  (req: Request, res: Response, next: NextFunction) => {
+    dashboardController.transactionChart(req, res, next);
+  }
+);
+
+router.post(
+  "/dashboard/report/:documentType",
+  (req: Request, res: Response, next: NextFunction) => {
+    dashboardController.downloadReport(req, res, next);
+  }
+);
 
 
 export default router;

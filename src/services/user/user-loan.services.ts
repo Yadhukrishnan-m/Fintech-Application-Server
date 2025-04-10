@@ -51,112 +51,112 @@ export class UserLoanService implements IUserLoanService {
       totalUserLoans,
     };
   }
-  async getEmis(
-    userLoanId: string,
-    userId:string
-  ): Promise<{ emiSchedule: IEmi[]; userLoan: IUserLoan }> {
-    const userLoan: IUserLoan | null = await this._userLoanRepository.findById(
-      userLoanId
-    );
-    if (!userLoan) {
-      throw new CustomError(MESSAGES.NOT_FOUND, STATUS_CODES.NOT_FOUND);
-    }
-    if (userLoan.userId.toString()!==userId) {
-      throw new CustomError(MESSAGES.BAD_REQUEST, STATUS_CODES.BAD_REQUEST);
-    }
-
-    const transactions: ITransaction[] | null =
-      await this._transactionRepository.getUserLoanTransactions(userLoanId);
-    const principalAmount = userLoan.amount;
-    const annualInterestRate = userLoan.interest;
-    const tenure = userLoan.tenure;
-    const { emi, monthlyInterest, principalPerMonth } =
-      this._emiCalculator.calculateEmi(
-        principalAmount,
-        annualInterestRate,
-        tenure
+    async getEmis(
+      userLoanId: string,
+      userId:string
+    ): Promise<{ emiSchedule: IEmi[]; userLoan: IUserLoan }> {
+      const userLoan: IUserLoan | null = await this._userLoanRepository.findById(
+        userLoanId
       );
-
-    // const today = new Date("2025-04-30"); // for testing phace give dates for testing
-    // const today=new Date()
-    today.setHours(0, 0, 0, 0);
-
-    const emiSchedule = [];
-
-    const rawDueDate = new Date(userLoan.createdAt); // Get the loan creation date
-    const startingDueDate = new Date(rawDueDate); // Clone the original date
-    startingDueDate.setHours(0, 0, 0, 0);
-    startingDueDate.setMonth(startingDueDate.getMonth() + 1);
-
-    let hasUnpaidEMI = false;
-
-    const paidTransactions = new Map();
-    let count = 1;
-    if (transactions) {
-      transactions.forEach((tx) => {
-        paidTransactions.set(count++, tx);
-      });
-    }
-
-    for (let i = 1; i <= tenure; i++) {
-      const thisEmiDueDate = new Date(startingDueDate);
-      thisEmiDueDate.setMonth(thisEmiDueDate.getMonth() + (i - 1));
-      thisEmiDueDate.setHours(0, 0, 0, 0);
-
-      const isPaid = paidTransactions.has(i);
-      let emiStatus: "paid" | "upcoming" | "due" | "grace" | "overdue" =
-        "upcoming";
-      let penalty = 0;
-      let canPay = false;
-
-      const gracePeriodEndDate = new Date(thisEmiDueDate);
-      gracePeriodEndDate.setDate(
-        gracePeriodEndDate.getDate() + userLoan.gracePeriod
-      );
-      gracePeriodEndDate.setHours(23, 59, 59, 999);
-
-      const isExactDueDate =
-        today.getDate() === thisEmiDueDate.getDate() &&
-        today.getMonth() === thisEmiDueDate.getMonth() &&
-        today.getFullYear() === thisEmiDueDate.getFullYear();
-
-      if (isPaid) {
-        emiStatus = "paid";
-
-        penalty = isPaid ? paidTransactions.get(i)?.penaltyAmount || 0 : 0;
-      } else if (today < thisEmiDueDate) {
-        emiStatus = "upcoming";
-      } else if (isExactDueDate) {
-        emiStatus = "due";
-        canPay = !hasUnpaidEMI;
-      } else if (today > thisEmiDueDate && today <= gracePeriodEndDate) {
-        emiStatus = "grace";
-        canPay = !hasUnpaidEMI;
-      } else {
-        emiStatus = "overdue";
-
-        penalty = this._emiCalculator.calculatePenalty(
-          emi,
-          userLoan.duePenalty,
-          gracePeriodEndDate,
-          today
-        );
-        canPay = !hasUnpaidEMI;
-        hasUnpaidEMI = true;
+      if (!userLoan) {
+        throw new CustomError(MESSAGES.NOT_FOUND, STATUS_CODES.NOT_FOUND);
+      }
+      if (userLoan.userId.toString()!==userId) {
+        throw new CustomError(MESSAGES.BAD_REQUEST, STATUS_CODES.BAD_REQUEST);
       }
 
-      emiSchedule.push({
-        emiNumber: i,
-        amount: emi,
-        dueDate: new Date(thisEmiDueDate),
-        gracePeriodEndDate: new Date(gracePeriodEndDate),
-        status: emiStatus,
-        penalty: penalty,
-        transaction: isPaid ? paidTransactions.get(i) : null,
-        canPay: canPay,
-      });
-    }
+      const transactions: ITransaction[] | null =
+        await this._transactionRepository.getUserLoanTransactions(userLoanId);
+      const principalAmount = userLoan.amount;
+      const annualInterestRate = userLoan.interest;
+      const tenure = userLoan.tenure;
+      const { emi, monthlyInterest, principalPerMonth } =
+        this._emiCalculator.calculateEmi(
+          principalAmount,
+          annualInterestRate,
+          tenure
+        );
 
-    return { emiSchedule, userLoan };
-  }
+      // const today = new Date("2025-04-30"); // for testing phace give dates for testing
+      // const today=new Date()
+      today.setHours(0, 0, 0, 0);
+
+      const emiSchedule = [];
+
+      const rawDueDate = new Date(userLoan.createdAt); // Get the loan creation date
+      const startingDueDate = new Date(rawDueDate); // Clone the original date
+      startingDueDate.setHours(0, 0, 0, 0);
+      startingDueDate.setMonth(startingDueDate.getMonth() + 1);
+
+      let hasUnpaidEMI = false;
+
+      const paidTransactions = new Map();
+      let count = 1;
+      if (transactions) {
+        transactions.forEach((tx) => {
+          paidTransactions.set(count++, tx);
+        });
+      }
+
+      for (let i = 1; i <= tenure; i++) {
+        const thisEmiDueDate = new Date(startingDueDate);
+        thisEmiDueDate.setMonth(thisEmiDueDate.getMonth() + (i - 1));
+        thisEmiDueDate.setHours(0, 0, 0, 0);
+
+        const isPaid = paidTransactions.has(i);
+        let emiStatus: "paid" | "upcoming" | "due" | "grace" | "overdue" =
+          "upcoming";
+        let penalty = 0;
+        let canPay = false;
+
+        const gracePeriodEndDate = new Date(thisEmiDueDate);
+        gracePeriodEndDate.setDate(
+          gracePeriodEndDate.getDate() + userLoan.gracePeriod
+        );
+        gracePeriodEndDate.setHours(23, 59, 59, 999);
+
+        const isExactDueDate =
+          today.getDate() === thisEmiDueDate.getDate() &&
+          today.getMonth() === thisEmiDueDate.getMonth() &&
+          today.getFullYear() === thisEmiDueDate.getFullYear();
+
+        if (isPaid) {
+          emiStatus = "paid";
+
+          penalty = isPaid ? paidTransactions.get(i)?.penaltyAmount || 0 : 0;
+        } else if (today < thisEmiDueDate) {
+          emiStatus = "upcoming";
+        } else if (isExactDueDate) {
+          emiStatus = "due";
+          canPay = !hasUnpaidEMI;
+        } else if (today > thisEmiDueDate && today <= gracePeriodEndDate) {
+          emiStatus = "grace";
+          canPay = !hasUnpaidEMI;
+        } else {
+          emiStatus = "overdue";
+
+          penalty = this._emiCalculator.calculatePenalty(
+            emi,
+            userLoan.duePenalty,
+            gracePeriodEndDate,
+            today
+          );
+          canPay = !hasUnpaidEMI;
+          hasUnpaidEMI = true;
+        }
+
+        emiSchedule.push({
+          emiNumber: i,
+          amount: emi,
+          dueDate: new Date(thisEmiDueDate),
+          gracePeriodEndDate: new Date(gracePeriodEndDate),
+          status: emiStatus,
+          penalty: penalty,
+          transaction: isPaid ? paidTransactions.get(i) : null,
+          canPay: canPay,
+        });
+      }
+
+      return { emiSchedule, userLoan };
+    }
 }

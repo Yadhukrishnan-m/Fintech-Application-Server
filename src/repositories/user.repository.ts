@@ -69,4 +69,8 @@ export class UserRepository
     const totalUsers = await UserModel.countDocuments(query);
     return { users, totalPages: Math.ceil(totalUsers / limit) };
   }
+
+ async  findCount():Promise <number>{
+  return await UserModel.countDocuments()
+ }
 }

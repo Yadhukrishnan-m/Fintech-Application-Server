@@ -71,4 +71,25 @@ export class ProfileController {
       next(error);
     }
   }
+
+  async contactUs(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    try {
+      
+
+     const { firstName, lastName, email, phone, message } = req.body;
+     await this._profileService.contactUs(
+       firstName,
+       lastName,
+       email,
+       phone,
+       message
+     );
+   res
+     .status(STATUS_CODES.CREATED)
+     .json({ success: true, message: MESSAGES.CREATED });
+     
+    } catch (error) {
+      next(error);
+    }
+  }
 }

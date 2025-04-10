@@ -82,6 +82,57 @@ export class EmailService implements IEmailService {
     `;
   }
 
+  generateContactUsEmailContent(
+    firstName: string,
+    lastName: string,
+    email: string,
+    phone: string,
+    message: string
+  ): string {
+    return `
+  <body style="margin: 0; padding: 0; background-color: #fff; font-family: 'Arial', sans-serif; color: #000;">
+    <table width="100%" cellspacing="0" cellpadding="0" style="padding: 20px 0;">
+      <tr>
+        <td align="center">
+          <table width="600" cellspacing="0" cellpadding="0" style="background: #fff; padding: 40px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); border: 1px solid #000;">
+            <!-- Header -->
+            <tr>
+              <td align="center" style="font-size: 22px; font-weight: bold; padding-bottom: 20px; color: #000;">
+                New Contact Us Submission
+              </td>
+            </tr>
+            <!-- User Info -->
+            <tr>
+              <td style="font-size: 16px; color: #333; line-height: 1.6;">
+                <strong>Name:</strong> ${firstName} ${lastName}<br/>
+                <strong>Email:</strong> <a href="mailto:${email}" style="color: #000; text-decoration: none;">${email}</a><br/>
+                <strong>Phone:</strong> <a href="tel:${phone}" style="color: #000; text-decoration: none;">${phone}</a>
+              </td>
+            </tr>
+            <!-- Message -->
+            <tr>
+              <td style="padding-top: 20px; font-size: 16px; color: #333; line-height: 1.6;">
+                <strong>Message:</strong><br/>
+                <div style="margin-top: 10px; background-color: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #ddd;">
+                  ${message}
+                </div>
+              </td>
+            </tr>
+            <!-- Footer -->
+            <tr>
+              <td align="center" style="font-size: 14px; padding-top: 30px; color: #777;">
+                This message was submitted via the QuicFin Contact Us form.
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+  </html>
+  `;
+  }
+
   generateResetPasswordEmailContent(resetLink: string): string {
     return `
   <body style="margin: 0; padding: 0; background-color: #fff; font-family: 'Arial', sans-serif; color: #000;">

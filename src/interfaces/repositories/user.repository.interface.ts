@@ -19,5 +19,6 @@ export interface IUserRepository extends IBaseRepository<IUser> {
     skip: number
   ): Promise<{ users: IUser[]; totalPages: number }>;
   findFinscore(userId: string): Promise<number | null>;
+  findCount(): Promise<number>;
 }
  

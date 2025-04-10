@@ -52,12 +52,48 @@ export class UserLoanRepository
       .lean();
   }
 
- async  getUserLoansOfSingleUser(userId:string):Promise<IUserLoan[]>{
-      return await UserLoanModel.find({ userId: userId })
-        .select("userLoanId amount tenure interest gracePeriod duePenalty") 
-        .populate({
-          path: "loanId",
-          select: "_id name", 
-        });
+  async getUserLoansOfSingleUser(userId: string): Promise<IUserLoan[]> {
+    return await UserLoanModel.find({ userId: userId })
+      .select("userLoanId amount tenure interest gracePeriod duePenalty")
+      .populate({
+        path: "loanId",
+        select: "_id name",
+      });
+  }
+
+  async getTotalLoanAmount(): Promise<number> {
+    const result = await UserLoanModel.aggregate([
+      {
+        $group: {
+          _id: null,
+          totalAmount: { $sum: "$amount" },
+        },
+      },
+    ]);
+    return result[0]?.totalAmount || 0;
+  }
+  async getTotalUserLoanCount(): Promise<number> {
+    return await UserLoanModel.countDocuments();
+  }
+
+  async getLoansBetweenDates(
+    startDate: Date,
+    endDate: Date
+  ): Promise<IUserLoan[]> {
+    return await UserLoanModel.find({
+      createdAt: {
+        $gte: startDate,
+        $lte: endDate,
+      },
+    })
+      // .populate({
+      //   path: "loanId",
+      //   select: "loanId name",
+      // })
+      // .populate({
+      //   path: "userId",
+      //   select: "customerId name email",
+      // })
+      // .lean();
   }
 }

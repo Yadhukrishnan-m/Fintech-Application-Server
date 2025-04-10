@@ -16,5 +16,20 @@ export interface IApplicationRepository extends IBaseRepository<IApplication> {
     pageSize: number,
     userId: string
   ): Promise<IApplication[] | null>;
+  getApplicationCount(): Promise<{
+    total: number;
+    approved: number;
+    rejected: number;
+    pending: number;
+  }>;
+  applicationChartData(pipeline: any): Promise<
+    {
+      _id: string;
+      name: string;
+      total: string;
+      approved: string;
+      rejected: string;
+    }[]
+  >;
 }
  
