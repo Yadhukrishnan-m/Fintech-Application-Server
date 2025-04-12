@@ -22,13 +22,10 @@ jobs:
 
           ssh -o StrictHostKeyChecking=no -i key.pem $EC2_USERNAME@$EC2_HOST << 'ENDSSH'
             # Navigate to project directory or clone if it doesn't exist
-            if [ -d "~/Fintech-Appliation-Server" ]; then
-              cd ~/Fintech-Appliation-Server
-              git pull origin main
-            else
-              git clone https://github.com/Yadhukrishnan-m/Fintech-Appliation-Server.git ~/Fintech-Appliation-Server
-              cd ~/Fintech-Appliation-Server
-            fi
+            
+            cd ~/Fintech-Appliation-Server
+            git pull origin main
+            
             
             # Install dependencies and build
             npm ci
