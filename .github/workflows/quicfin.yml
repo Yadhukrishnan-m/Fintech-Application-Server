@@ -59,17 +59,9 @@ jobs:
             ENVFILE
             
             # Check if the app is already running in PM2
-            pm2 list | grep -q "quickfin" || pm2 list | grep -q "app"
-            if [ $? -eq 0 ]; then
-              # Restart app if it exists
-              pm2 restart quickfin || pm2 restart app
-            else
-              # Start new process if it doesn't exist
-              pm2 start dist/server.js --name quickfin
-            fi
-            
-            # Save PM2 process list
-            pm2 save
+           
+            pm2 restart all
+           
           ENDSSH
 
           rm key.pem
