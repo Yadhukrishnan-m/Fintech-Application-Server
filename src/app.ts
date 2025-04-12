@@ -16,7 +16,7 @@ import { TYPES } from './config/inversify/inversify.types';
 import path from 'path';
 app.use(
   cors({
-    origin: "http://localhost:5173", 
+    origin: process.env.FRONTEND_URI,
     credentials: true,
   })
 );
