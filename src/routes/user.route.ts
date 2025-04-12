@@ -87,9 +87,7 @@ router.post(
     profileController.completeProfile(req, res, next)
 );
 router.get(
-  "/loans",
-  authenticateUser,
-  (req: Request, res: Response, next: NextFunction) =>
+  "/loans",  (req: Request, res: Response, next: NextFunction) =>
     loanController.getLoans(req, res, next)
 );
 router.get(
