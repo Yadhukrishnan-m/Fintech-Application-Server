@@ -133,7 +133,7 @@ class S3Uploader implements IUploadToS3 {
 
   async getSignedUrl(
     fileKey: string,
-    expiresIn: number = 300
+    expiresIn: number = process.env.URL_EXPIRY as unknown as number
   ): Promise<string> {
     try {
       const command = new GetObjectCommand({

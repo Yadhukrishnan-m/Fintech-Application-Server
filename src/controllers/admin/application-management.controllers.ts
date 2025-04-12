@@ -41,7 +41,7 @@ export class ApplicationManagementController {
       const { applicationId } = req.params;
       const application =
         await this._applicationManagementService.getApplication(applicationId);
-      const expiresIn = 300;
+      const expiresIn = process.env.URL_EXPIRY as unknown as number;
 
       for (const document of application.documents) {
         const key = Object.keys(document)[0];

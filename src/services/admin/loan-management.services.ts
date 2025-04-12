@@ -116,7 +116,7 @@ export class LoanManagementService implements ILoanManagementService {
     if (!loanData) {
       throw new CustomError(MESSAGES.NOT_FOUND, STATUS_CODES.NOT_FOUND);
     }
-    const expiresIn = 300;
+    const expiresIn = process.env.URL_EXPIRY as unknown as number;
     const imageurl = await this._uploadToS3.getSignedUrl(
       loanData.loanImage,
       expiresIn

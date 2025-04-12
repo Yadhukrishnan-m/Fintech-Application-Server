@@ -92,7 +92,7 @@ export class LoanService implements ILoanService {
         STATUS_CODES.NOT_FOUND
       );
     }
-    const expiresIn = 300;
+    const expiresIn = process.env.URL_EXPIRY as unknown as number;
     const plainLoans = loans.map((loan) => loan.toObject());
     const processedLoans = await Promise.all(
       plainLoans.map(async (loan) => {
@@ -121,7 +121,7 @@ export class LoanService implements ILoanService {
     }
 
     const fileKey = loanData.loanImage;
-    const expiresIn = 300;
+    const expiresIn = process.env.URL_EXPIRY as unknown as number;
     let signedUrl = await redisClient.get(fileKey);
     if (!signedUrl) {
       signedUrl = await this._uploadToS3.getSignedUrl(fileKey, expiresIn);

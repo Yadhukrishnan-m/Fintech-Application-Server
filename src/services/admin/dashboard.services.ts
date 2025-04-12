@@ -185,6 +185,8 @@ export class DashboardService implements IDashboardService {
 
       matchStage = {
         createdAt: { $gte: startOfYear, $lte: endOfYear },
+        paymentStatus: "completed",
+        type: "emi",
       };
     }
 
@@ -202,6 +204,8 @@ export class DashboardService implements IDashboardService {
 
     const { totalAmount, totalInterest, totalPenalty } =
       await this._transactionRepository.transactionChart(pipeline);
+      
+      
 
     const principal = totalAmount - totalInterest - totalPenalty;
 

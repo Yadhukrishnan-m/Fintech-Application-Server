@@ -156,7 +156,7 @@ export class ApplicationService implements IApplicationService {
    if (applicationDetails.userId._id.toString()!==userId) {
        throw new CustomError(MESSAGES.BAD_REQUEST, STATUS_CODES.BAD_REQUEST);
    }
-      const expiresIn = 300;
+      const expiresIn = process.env.URL_EXPIRY as unknown as number;
       for (const document of applicationDetails.documents) {
         const key = Object.keys(document)[0];
         let signedUrl = await redisClient.get(document[key]);

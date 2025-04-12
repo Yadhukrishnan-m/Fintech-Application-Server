@@ -1,18 +1,19 @@
 import { injectable } from "inversify";
 import jwt from "jsonwebtoken";
+import ms from 'ms'
 
 @injectable()
 export class JwtService {
   generateAccessToken(_id: string): string {
     const expiry = process.env.ACCESS_TOKEN_EXPIRY
     return jwt.sign({ _id }, process.env.ACCESS_TOKEN_SECRET as string, {
-      expiresIn: "10m"
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRY as ms.StringValue
     });
   }
 
   generateRefreshToken(_id: string): string {
     return jwt.sign({ _id }, process.env.REFRESH_TOKEN_SECRET as string, {
-      expiresIn: "7d",
+      expiresIn: process.env.REFRESH_TOKEN_EXPIRY as ms.StringValue,
     });
   }
 

@@ -73,7 +73,7 @@ export class UserManagementService implements IUserManagementService {
       throw new CustomError(MESSAGES.USER_NOT_FOUND, STATUS_CODES.NOT_FOUND);
     }
     const user = userData.toObject();
-    const expiresIn = 300;
+    const expiresIn = process.env.URL_EXPIRY as unknown as number;
     const getSignedUrlWithCache = async (fileKey: string): Promise<string> => {
       let signedUrl = await redisClient.get(fileKey);
       if (!signedUrl) {

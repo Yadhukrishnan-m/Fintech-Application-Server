@@ -28,7 +28,7 @@ export class ProfileService implements IProfileService {
       );
     }
 
-    const expiresIn = 300;
+    const expiresIn = process.env.URL_EXPIRY as unknown as number;
 
     // Function to get signed URL with Redis caching
     const getSignedUrl = async (docKey: string) => {
