@@ -1,9 +1,12 @@
 import express, { NextFunction, Request, Response } from "express";
 // import { authUserController,profilecontroller } from "../config/user.di";
 import { authenticateUser } from "../middlewares/user-auth.middleware";
-import { uploadAdditionalDocs, uploadFiles } from "../middlewares/multer.middleware";
+import {
+  uploadAdditionalDocs,
+  uploadFiles,
+} from "../middlewares/multer.middleware";
 
-import { container } from "../config/inversify/inversify.config"; 
+import { container } from "../config/inversify/inversify.config";
 import { TYPES } from "../config/inversify/inversify.types";
 import { AuthUserController } from "../controllers/user/auth-user.controllers";
 import { ProfileController } from "../controllers/user/user-profile.controllers";
@@ -20,15 +23,25 @@ const authUserController = container.get<AuthUserController>(
 const profileController = container.get<ProfileController>(
   TYPES.ProfileController
 );
-const loanController = container.get<LoanController>(
-  TYPES.LoanController
+const loanController = container.get<LoanController>(TYPES.LoanController);
+const paymentController = container.get<PaymentController>(
+  TYPES.PaymentController
 );
-const paymentController=container.get<PaymentController>(TYPES.PaymentController)
-const userLoanController=container.get<UserLoanController>(TYPES.UserLoanController)
-const applicationController=container.get<ApplicationController>(TYPES.ApplicationController)
-const transactionController=container.get<TransactionController>(TYPES.TransactionController)
-const userNotificationController=container.get<UserNotificationController>(TYPES.UserNotificationController)
-const userChatController=container.get<UserChatController>(TYPES.UserChatController)
+const userLoanController = container.get<UserLoanController>(
+  TYPES.UserLoanController
+);
+const applicationController = container.get<ApplicationController>(
+  TYPES.ApplicationController
+);
+const transactionController = container.get<TransactionController>(
+  TYPES.TransactionController
+);
+const userNotificationController = container.get<UserNotificationController>(
+  TYPES.UserNotificationController
+);
+const userChatController = container.get<UserChatController>(
+  TYPES.UserChatController
+);
 const router = express.Router();
 
 router.post("/register", (req: Request, res: Response, next: NextFunction) =>
@@ -50,8 +63,10 @@ router.post(
   (req: Request, res: Response, next: NextFunction) =>
     authUserController.refreshToken(req, res, next)
 );
-router.post("/google-login", (req: Request, res: Response, next: NextFunction) =>
-  authUserController.googleLogin(req, res, next)
+router.post(
+  "/google-login",
+  (req: Request, res: Response, next: NextFunction) =>
+    authUserController.googleLogin(req, res, next)
 );
 router.post(
   "/forgot-password",
@@ -64,14 +79,13 @@ router.post(
     authUserController.resetPassword(req, res, next)
 );
 router.patch(
-  "/change-password",authenticateUser,
+  "/change-password",
+  authenticateUser,
   (req: Request, res: Response, next: NextFunction) =>
     authUserController.changePassword(req, res, next)
 );
-router.post(
-  "/logout",
-  (req: Request, res: Response, next: NextFunction) =>
-    authUserController.logout(req, res, next)
+router.post("/logout", (req: Request, res: Response, next: NextFunction) =>
+  authUserController.logout(req, res, next)
 );
 
 router.get(
@@ -82,13 +96,13 @@ router.get(
 );
 router.post(
   "/complete-profile",
-  authenticateUser,uploadFiles,
+  authenticateUser,
+  uploadFiles,
   (req: Request, res: Response, next: NextFunction) =>
     profileController.completeProfile(req, res, next)
 );
-router.get(
-  "/loans",  (req: Request, res: Response, next: NextFunction) =>
-    loanController.getLoans(req, res, next)
+router.get("/loans", (req: Request, res: Response, next: NextFunction) =>
+  loanController.getLoans(req, res, next)
 );
 router.get(
   "/loan/:id",
@@ -99,12 +113,11 @@ router.get(
 router.get(
   "/get-interest/:loanId",
   authenticateUser,
-  (req: Request, res: Response, next: NextFunction) =>
-   {  
-    
-    loanController.getInterest(req, res, next)}
+  (req: Request, res: Response, next: NextFunction) => {
+    loanController.getInterest(req, res, next);
+  }
 );
- 
+
 router.post(
   "/apply-loan",
   authenticateUser,
@@ -146,7 +159,7 @@ router.get(
 );
 router.get(
   "/razorpay/create-order/:userLoanId",
-  authenticateUser,//
+  authenticateUser, //
   (req: Request, res: Response, next: NextFunction) => {
     paymentController.createOrder(req, res, next);
   }
@@ -167,7 +180,6 @@ router.get(
   }
 );
 
-
 router.get(
   "/get-notifications",
   authenticateUser,
@@ -182,10 +194,9 @@ router.get(
   (req: Request, res: Response, next: NextFunction) => {
     userNotificationController.markUserNotificationsAsRead(req, res, next);
   }
-)
+);
 router.get(
   "/total-unreaded",
-  authenticateUser,
   (req: Request, res: Response, next: NextFunction) => {
     userNotificationController.totalUnreadNotifications(req, res, next);
   }
@@ -198,9 +209,13 @@ router.post(
   }
 );
 
-router.get("/get-chat",authenticateUser,(req:Request,res:Response,next:NextFunction)=>{
-  userChatController.getOrCreateChat(req,res,next)
-})
+router.get(
+  "/get-chat",
+  authenticateUser,
+  (req: Request, res: Response, next: NextFunction) => {
+    userChatController.getOrCreateChat(req, res, next);
+  }
+);
 
 router.post(
   "/send-message",
@@ -210,7 +225,4 @@ router.post(
   }
 );
 
-
-
 export default router;
-  
