@@ -26,7 +26,6 @@ jobs:
             cd ~/Fintech-Appliation-Server
             git pull origin main
             
-            
             # Install dependencies and build
             npm ci
             npm run build
