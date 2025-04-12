@@ -65,7 +65,7 @@ jobs:
               pm2 restart quickfin || pm2 restart app
             else
               # Start new process if it doesn't exist
-              pm2 start dist/index.js --name quickfin
+              pm2 start dist/server.js --name quickfin
             fi
             
             # Save PM2 process list

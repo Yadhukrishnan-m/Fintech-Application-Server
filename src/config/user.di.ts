@@ -14,15 +14,20 @@ const otpRepository=new OtpRepository();
 const passwordService=new PasswordService()
 const emailService=new EmailService
 const uploadToS3=new UploadToS3()
+const jwtService = new JwtService();
 //services
 const authUserService = new AuthUserService(
   userRepository,
   otpRepository,
   passwordService,
   emailService,
-  JwtService
+  jwtService
 );
-const profileService=new ProfileService(userRepository,uploadToS3)
+const profileService = new ProfileService(
+  userRepository,
+  uploadToS3,
+  emailService
+);
 
 const authUserController = new AuthUserController(authUserService);
 const profilecontroller = new ProfileController(profileService);
