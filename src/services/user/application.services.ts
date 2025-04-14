@@ -71,6 +71,7 @@ export class ApplicationService implements IApplicationService {
       userDetails.finscore==null
     ) {
 
+console.log('not found');
 
       throw new CustomError(MESSAGES.NOT_FOUND, STATUS_CODES.NOT_FOUND);
     }
