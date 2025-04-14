@@ -72,22 +72,6 @@ export class ApplicationService implements IApplicationService {
     ) {
       
 
- console.log("Validation Failed:");
- if (!loanDetails) console.log("loanDetails is missing or null");
- else {
-   if (!loanDetails.duePenalty)
-     console.log("loanDetails.duePenalty is missing or falsy");
-   if (!loanDetails.gracePeriod)
-     console.log("loanDetails.gracePeriod is missing or falsy");
- }
-
- if (!userDetails) console.log("userDetails is missing or null");
- else {
-   if (!userDetails.cibilScore)
-     console.log("userDetails.cibilScore is missing or falsy");
-   if (userDetails.finscore == null)
-     console.log("userDetails.finscore is null");
- }
 
       throw new CustomError(MESSAGES.NOT_FOUND, STATUS_CODES.NOT_FOUND);
     }
