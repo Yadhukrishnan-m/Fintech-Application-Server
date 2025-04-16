@@ -195,6 +195,7 @@ router.get(
 );
 router.get(
   "/total-unreaded",
+  authenticateUser,
   (req: Request, res: Response, next: NextFunction) => {
     userNotificationController.totalUnreadNotifications(req, res, next);
   }
