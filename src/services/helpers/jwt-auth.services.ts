@@ -6,6 +6,8 @@ import ms from 'ms'
 export class JwtService {
   generateAccessToken(_id: string): string {
     const expiry = process.env.ACCESS_TOKEN_EXPIRY
+    console.log(expiry);
+    
     return jwt.sign({ _id }, process.env.ACCESS_TOKEN_SECRET as string, {
       expiresIn: process.env.ACCESS_TOKEN_EXPIRY as ms.StringValue
     });
