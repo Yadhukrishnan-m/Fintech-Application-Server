@@ -106,7 +106,6 @@ router.get("/loans", (req: Request, res: Response, next: NextFunction) =>
 );
 router.get(
   "/loan/:id",
-  authenticateUser,
   (req: Request, res: Response, next: NextFunction) =>
     loanController.getLoan(req, res, next)
 );
