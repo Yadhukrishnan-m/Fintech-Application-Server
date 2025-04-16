@@ -111,7 +111,6 @@ router.get(
 );
 router.get(
   "/get-interest/:loanId",
-  authenticateUser,
   (req: Request, res: Response, next: NextFunction) => {
     loanController.getInterest(req, res, next);
   }
