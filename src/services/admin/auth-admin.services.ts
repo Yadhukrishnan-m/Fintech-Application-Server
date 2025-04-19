@@ -14,7 +14,7 @@ export class AuthAdminService implements IAuthAdminService {
   constructor(
     @inject(TYPES.AdminRepository) private _adminrepository: IAdminRepository,
     @inject(TYPES.PasswordService) private _passwordService: IPasswordService,
-    @inject(TYPES.JwtService)  private _jwtService: IJwtService
+    @inject(TYPES.JwtService) private _jwtService: IJwtService
   ) {}
   async login(
     adminCredential: LoginDto
@@ -22,15 +22,14 @@ export class AuthAdminService implements IAuthAdminService {
     const adminData: IAdmin | null = await this._adminrepository.findByEmail(
       adminCredential.email
     );
-   
-    
+
     if (!adminData) {
       throw new CustomError(
         MESSAGES.INVALID_CREDENTIALS,
         STATUS_CODES.UNAUTHORIZED
       );
     }
-     
+
     if (!adminData.password) {
       throw new CustomError(
         MESSAGES.INVALID_CREDENTIALS,
@@ -53,5 +52,16 @@ export class AuthAdminService implements IAuthAdminService {
     const refreshToken = this._jwtService.generateRefreshToken(adminData._id);
 
     return { accessToken, refreshToken };
+  }
+
+  async refreshToken(refreshToken: string): Promise<string> {
+    const userId: string | null = this._jwtService.verifyToken(
+      refreshToken,
+      "refresh"
+    );
+    if (!userId) {
+      throw new CustomError("refresh token is not valid", 400);
+    }
+    return this._jwtService.generateAccessToken(userId);
   }
 }

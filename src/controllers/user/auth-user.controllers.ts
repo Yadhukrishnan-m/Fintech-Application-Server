@@ -62,7 +62,7 @@ export class AuthUserController {
 
       res.cookie("userRefreshToken", refreshToken, {
         httpOnly: true,
-        secure: false,
+        secure: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
       res
@@ -96,7 +96,7 @@ export class AuthUserController {
         await this._authUserService.googleLogin(googleToken);
       res.cookie("userRefreshToken", refreshToken, {
         httpOnly: true,
-        secure: false,
+        secure: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
       res

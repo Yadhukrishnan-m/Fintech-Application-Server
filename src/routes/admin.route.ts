@@ -57,6 +57,12 @@ router.get(
   (req: Request, res: Response, next: NextFunction) =>
     userManagementController.getVerifiedUsers(req, res, next)
 );
+
+router.post(
+  "/refresh-token",
+  (req: Request, res: Response, next: NextFunction) =>
+    authAdminController.refreshToken(req, res, next)
+);
 router.get(
   "/user/:id",
   authenticateAdmin,

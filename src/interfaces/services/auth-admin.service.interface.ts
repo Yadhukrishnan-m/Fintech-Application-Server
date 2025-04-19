@@ -4,5 +4,5 @@ export interface IAuthAdminService {
   login(
     userCredential: LoginDto
   ): Promise<{ accessToken: string; refreshToken: string }>;
-  
+  refreshToken(refreshToken: string): Promise<string>;
 }

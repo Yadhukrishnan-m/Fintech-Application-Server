@@ -18,7 +18,7 @@ export class AuthAdminController {
       );
       res.cookie("adminRefreshToken", refreshToken, {
         httpOnly: true,
-        secure: false,
+        secure: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
       res
@@ -28,11 +28,30 @@ export class AuthAdminController {
       next(error);
     }
   }
+
+  async refreshToken(req: Request, res: Response, next: NextFunction) {
+    try {
+      const refreshToken: string = req.cookies.adminRefreshToken;
+      if (!refreshToken) {
+        res.status(STATUS_CODES.BAD_REQUEST).json("no refresh token available");
+        return;
+      }
+      const accessToken: string = await this._authAdminService.refreshToken(
+        refreshToken
+      );
+      res
+        .status(STATUS_CODES.OK)
+        .json({ message: "new token created", accessToken: accessToken });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async logout(req: Request, res: Response, next: NextFunction) {
     try {
-      res.clearCookie("userRefreshToken", {
+      res.clearCookie("adminRefreshToken", {
         httpOnly: true,
-        secure: false,
+        secure: true,
       });
       res.status(STATUS_CODES.OK).json({
         success: true,
