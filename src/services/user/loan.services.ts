@@ -132,7 +132,7 @@ export class LoanService implements ILoanService {
   async getInterest(userId: string, loanId: string): Promise<number> {
     const userData: IUser | null = await this._userRepository.findById(userId);
     const loanData: ILoan | null = await this._loanRepository.findById(loanId);
-
+    
     if (!userData || !loanData) {
       throw new CustomError(MESSAGES.NOT_FOUND, STATUS_CODES.NOT_FOUND);
     }
@@ -143,6 +143,9 @@ export class LoanService implements ILoanService {
       
       throw new CustomError("user not verified", STATUS_CODES.UNAUTHORIZED);
     }
+
+      
+
     if (!userData.cibilScore || (userData.finscore==null || undefined)) {
       throw new CustomError(MESSAGES.NOT_FOUND, STATUS_CODES.NOT_FOUND);
     }
