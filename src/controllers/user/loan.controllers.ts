@@ -53,6 +53,7 @@ export class LoanController {
     try {
       const { loanId } = req.params;
       const { userId } = req as AuthenticatedRequest;
+      console.log("userid is "+userId);
       
       
       
