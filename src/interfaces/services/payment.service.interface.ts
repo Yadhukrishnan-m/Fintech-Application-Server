@@ -4,13 +4,15 @@ import { IUserLoan } from "../../models/user-loan.model";
 
 export interface IPaymentService {
   createOrder(
-    userLoanId: string
+    userLoanId: string,
+    userId: string
   ): Promise<{ orderId: string; totalAmount: number }>;
   verifyPayment(
     razorpay_payment_id: string,
     razorpay_order_id: string,
     razorpay_signature: string,
     userLoanId: string,
-    userId:string
+    userId: string
   ): Promise<void>;
+  cancelInitialisation(userId: string, userLoanId: string): Promise<void>;
 }

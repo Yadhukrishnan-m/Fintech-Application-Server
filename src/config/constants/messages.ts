@@ -13,6 +13,8 @@ export const MESSAGES = {
   ACCOUNT_NOT_VERIFIED: "Your account is not verified yet.",
   LOGOUT_SUCCESS: "Logged out successfully.",
  TRANSACTION_FAILED:'Transaction Failed',
+ PAYMENT_IN_PROGRESS:'Payment already initiated for this loan by you. Please complete or cancel the previous payment.',
+ PAYMENT_FAILED:'payment failed',
   // Registration & Profile
   REGISTRATION_SUCCESS: "Registration successful.",
   REGISTRATION_FAILED: "Registration failed. Please try again.",

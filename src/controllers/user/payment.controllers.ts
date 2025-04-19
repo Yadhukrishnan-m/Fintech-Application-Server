@@ -24,7 +24,10 @@ export class PaymentController {
     try {
       const { userLoanId } = req.params;
       const { userId } = req as AuthenticatedRequest;
-     const {orderId,totalAmount} =await this._paymentService.createOrder(userLoanId);
+      const { orderId, totalAmount } = await this._paymentService.createOrder(
+        userLoanId,
+        userId
+      );
 
       res.status(STATUS_CODES.CREATED).json({
         message: MESSAGES.CREATED,
@@ -33,7 +36,7 @@ export class PaymentController {
         totalAmount,
       });
     } catch (error) {
-        console.log(error)
+   
       next(error);
     }
   }
@@ -46,19 +49,39 @@ export class PaymentController {
         razorpay_signature,
         userLoanId,
       } = req.body;
-       const { userId } = req as AuthenticatedRequest;
- await this._paymentService.verifyPayment(
-   razorpay_payment_id,
-   razorpay_order_id,
-   razorpay_signature,
-   userLoanId,
-   userId
- );
-     
+      const { userId } = req as AuthenticatedRequest;
+      await this._paymentService.verifyPayment(
+        razorpay_payment_id,
+        razorpay_order_id,
+        razorpay_signature,
+        userLoanId,
+        userId
+      );
+
       res.status(200).json({ message: "Payment verified and recorded" });
     } catch (error) {
-     console.log(error)
-     next(error)
+      
+      next(error);
+    }
+  }
+
+  async cancelPaymentInitialisation(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const {
+        
+        userLoanId,
+      } = req.body;
+      const { userId } = req as AuthenticatedRequest;
+
+await  this._paymentService.cancelInitialisation(userId,userLoanId)
+
+      res.status(200).json({ message: "Payment cancelled " });
+    } catch (error) {
+      next(error);
     }
   }
 }

@@ -169,8 +169,15 @@ router.post(
     paymentController.verifyRazorpayPayment(req, res, next);
   }
 );
+router.post(
+  "/razorpay/payment/cancel",
+  authenticateUser,
+  (req: Request, res: Response, next: NextFunction) => {
+    paymentController.cancelPaymentInitialisation(req, res, next);
+  }
+);
 
-router.get(
+router.get( 
   "/transactions",
   authenticateUser,
   (req: Request, res: Response, next: NextFunction) => {

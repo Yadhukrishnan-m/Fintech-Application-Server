@@ -26,8 +26,6 @@ export class LoanController {
            search as string,
            sortBy as string,
          );
-      
-
       res.status(STATUS_CODES.OK).json({
         success: true,
         message: MESSAGES.DATA_SENT_SUCCESS,
