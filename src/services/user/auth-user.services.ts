@@ -198,11 +198,17 @@ export class AuthUserService implements IAuthUserService {
     newPassword: string,
     userId:string
   ): Promise<void> {
+
+
    
     const user = await this._userRepository.findById(userId);
+         console.log(user?.password);
+
  if (!user?.password) {
    throw new CustomError("user dont have current password(logged in with google)", STATUS_CODES.NOT_FOUND);
  }
+
+ 
 
 
     if (!user||!user?.password) {
