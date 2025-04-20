@@ -140,7 +140,7 @@ export class UserManagementService implements IUserManagementService {
         }
     }else{
            const rejectedProfileNotification: Partial<INotification> = {
-             title: "Profile Verification Success",
+             title: "Profile Verification rejected",
              message:
                `Dear user, your profile has been rejected .The reason for rejection is : '${message}'  `,
              type: "personal",
