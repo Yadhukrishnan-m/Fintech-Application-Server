@@ -1,6 +1,6 @@
 import express, { NextFunction, Request, Response } from "express";
 // import { authUserController,profilecontroller } from "../config/user.di";
-import { authenticateUser } from "../middlewares/user-auth.middleware";
+import { authorizeRole } from "../middlewares/roleAuth";
 import {
   uploadAdditionalDocs,
   uploadFiles,
@@ -17,6 +17,7 @@ import { PaymentController } from "../controllers/user/payment.controllers";
 import { TransactionController } from "../controllers/user/transaction.controllers";
 import { UserNotificationController } from "../controllers/user/user-notificationController";
 import { UserChatController } from "../controllers/user/userChat.controllers";
+import { authenticateUser } from "../middlewares/user-auth.middleware";
 const authUserController = container.get<AuthUserController>(
   TYPES.AuthUserController
 );
@@ -80,7 +81,7 @@ router.post(
 );
 router.patch(
   "/change-password",
-  authenticateUser,
+  authenticateUser,authorizeRole(["user"]),
   (req: Request, res: Response, next: NextFunction) =>
     authUserController.changePassword(req, res, next)
 );
@@ -90,13 +91,14 @@ router.post("/logout", (req: Request, res: Response, next: NextFunction) =>
 
 router.get(
   "/get-user",
-  authenticateUser,
+  authenticateUser,authorizeRole(["user"]),
+  
   (req: Request, res: Response, next: NextFunction) =>
     profileController.getUser(req, res, next)
 );
 router.post(
   "/complete-profile",
-  authenticateUser,
+  authenticateUser,authorizeRole(["user"]),
   uploadFiles,
   (req: Request, res: Response, next: NextFunction) =>
     profileController.completeProfile(req, res, next)
@@ -111,7 +113,7 @@ router.get(
 );
 router.get(
   "/get-interest/:loanId",
-  authenticateUser,
+  authenticateUser,authorizeRole(["user"]),
   (req: Request, res: Response, next: NextFunction) => {
     loanController.getInterest(req, res, next);
   }
@@ -119,7 +121,7 @@ router.get(
 
 router.post(
   "/apply-loan",
-  authenticateUser,
+  authenticateUser,authorizeRole(["user"]),
   uploadAdditionalDocs,
   (req: Request, res: Response, next: NextFunction) =>
     applicationController.createApplication(req, res, next)
@@ -127,7 +129,7 @@ router.post(
 
 router.get(
   "/applications",
-  authenticateUser,
+  authenticateUser,authorizeRole(["user"]),
   (req: Request, res: Response, next: NextFunction) => {
     applicationController.getApplicationsByUserId(req, res, next);
   }
@@ -135,7 +137,7 @@ router.get(
 
 router.get(
   "/user-loans",
-  authenticateUser,
+  authenticateUser,authorizeRole(["user"]),
   (req: Request, res: Response, next: NextFunction) => {
     userLoanController.getUserLoansByUserId(req, res, next);
   }
@@ -143,7 +145,7 @@ router.get(
 
 router.get(
   "/application/:applicationId/details",
-  authenticateUser,
+  authenticateUser,authorizeRole(["user"]),
   (req: Request, res: Response, next: NextFunction) => {
     applicationController.getApplicationDetails(req, res, next);
   }
@@ -151,28 +153,28 @@ router.get(
 
 router.get(
   "/user-loan/emis/:userLoanId",
-  authenticateUser,
+  authenticateUser,authorizeRole(["user"]),
   (req: Request, res: Response, next: NextFunction) => {
     userLoanController.getUserLoanEmis(req, res, next);
   }
 );
 router.get(
   "/razorpay/create-order/:userLoanId",
-  authenticateUser, //
+  authenticateUser,authorizeRole(["user"]), //
   (req: Request, res: Response, next: NextFunction) => {
     paymentController.createOrder(req, res, next);
   }
 );
 router.post(
   "/razorpay/verify-payment",
-  authenticateUser,
+  authenticateUser,authorizeRole(["user"]),
   (req: Request, res: Response, next: NextFunction) => {
     paymentController.verifyRazorpayPayment(req, res, next);
   }
 );
 router.post(
   "/razorpay/payment/cancel",
-  authenticateUser,
+  authenticateUser,authorizeRole(["user"]),
   (req: Request, res: Response, next: NextFunction) => {
     paymentController.cancelPaymentInitialisation(req, res, next);
   }
@@ -180,7 +182,7 @@ router.post(
 
 router.get( 
   "/transactions",
-  authenticateUser,
+  authenticateUser,authorizeRole(["user"]),
   (req: Request, res: Response, next: NextFunction) => {
     transactionController.getTransactions(req, res, next);
   }
@@ -188,7 +190,7 @@ router.get(
 
 router.get(
   "/get-notifications",
-  authenticateUser,
+  authenticateUser,authorizeRole(["user"]),
   (req: Request, res: Response, next: NextFunction) => {
     userNotificationController.getNotification(req, res, next);
   }
@@ -196,14 +198,14 @@ router.get(
 
 router.get(
   "/notifications-mark-read",
-  authenticateUser,
+  authenticateUser,authorizeRole(["user"]),
   (req: Request, res: Response, next: NextFunction) => {
     userNotificationController.markUserNotificationsAsRead(req, res, next);
   }
 );
 router.get(
   "/total-unreaded",
-  authenticateUser,
+  authenticateUser,authorizeRole(["user"]),
   (req: Request, res: Response, next: NextFunction) => {
     userNotificationController.totalUnreadNotifications(req, res, next);
   }
@@ -218,7 +220,7 @@ router.post(
 
 router.get(
   "/get-chat",
-  authenticateUser,
+  authenticateUser,authorizeRole(["user"]),
   (req: Request, res: Response, next: NextFunction) => {
     userChatController.getOrCreateChat(req, res, next);
   }
@@ -226,7 +228,7 @@ router.get(
 
 router.post(
   "/send-message",
-  authenticateUser,
+  authenticateUser,authorizeRole(["user"]),
   (req: Request, res: Response, next: NextFunction) => {
     userChatController.sendMessage(req, res, next);
   }

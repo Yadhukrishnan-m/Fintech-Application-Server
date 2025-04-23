@@ -1,6 +1,5 @@
 import express, { NextFunction, Request, Response } from "express";
-
-import { authenticateAdmin } from "../middlewares/admin-auth.middleware";
+import { authorizeRole } from "../middlewares/roleAuth";
 import { TYPES } from "../config/inversify/inversify.types";
 import { AuthAdminController } from "../controllers/admin/auth-admin.controllers";
 import { container } from "../config/inversify/inversify.config";
@@ -13,6 +12,7 @@ import { UserLoanManagementController } from "../controllers/admin/user-loan-man
 import { NotificationController } from "../controllers/admin/notification.controllers";
 import { AdminChatController } from "../controllers/admin/adminChat.controllers";
 import { DashboardController } from "../controllers/admin/dashboard.controllers";
+import { authenticateAdmin } from "../middlewares/admin-auth.middleware";
 
 const authAdminController = container.get<AuthAdminController>(
   TYPES.AuthAdminController
@@ -47,13 +47,13 @@ router.post("/logout", (req: Request, res: Response, next: NextFunction) =>
 );
 router.get(
   "/unverified-users",
-  authenticateAdmin,
+  authenticateAdmin,authorizeRole(["admin"]),
   (req: Request, res: Response, next: NextFunction) =>
     userManagementController.getUnverifiedUsers(req, res, next)
 );
 router.get(
   "/verified-users",
-  authenticateAdmin,
+  authenticateAdmin,authorizeRole(["admin"]),
   (req: Request, res: Response, next: NextFunction) =>
     userManagementController.getVerifiedUsers(req, res, next)
 );
@@ -65,79 +65,79 @@ router.post(
 );
 router.get(
   "/user/:id",
-  authenticateAdmin,
+  authenticateAdmin,authorizeRole(["admin"]),
   (req: Request, res: Response, next: NextFunction) =>
     userManagementController.getUserById(req, res, next)
 );
 
 router.patch(
   "/verify-user/:id",
-  authenticateAdmin,
+  authenticateAdmin,authorizeRole(["admin"]),
   (req: Request, res: Response, next: NextFunction) =>
     userManagementController.verifyUser(req, res, next)
 );
 router.patch(
   "/blacklist-user/:id",
-  authenticateAdmin,
+  authenticateAdmin,authorizeRole(["admin"]),
   (req: Request, res: Response, next: NextFunction) =>
     userManagementController.blacklistUser(req, res, next)
 );
 router.post(
   "/create-loan",
-  authenticateAdmin,
+  authenticateAdmin,authorizeRole(["admin"]),
   uploadLoanImage,
   (req: Request, res: Response, next: NextFunction) =>
     loanManagementController.createLoan(req, res, next)
 );
 router.get(
   "/loans",
-  authenticateAdmin,
+  authenticateAdmin,authorizeRole(["admin"]),
   (req: Request, res: Response, next: NextFunction) =>
     loanManagementController.getLoans(req, res, next)
 );
 router.patch(
   "/loans/:loanId/toggle-status",
-  authenticateAdmin,
+  authenticateAdmin,authorizeRole(["admin"]),
   (req: Request, res: Response, next: NextFunction) =>
     loanManagementController.toggleLoanStatus(req, res, next)
 );
 
 router.get(
   "/loan/:loanId",
-  authenticateAdmin,
+  authenticateAdmin,authorizeRole(["admin"]),
   (req: Request, res: Response, next: NextFunction) =>
     loanManagementController.getLoan(req, res, next)
 );
 router.put(
   "/update-loan/:loanId",
-  authenticateAdmin,uploadLoanImage,
+  authenticateAdmin,authorizeRole(["admin"]),uploadLoanImage,
   (req: Request, res: Response, next: NextFunction) =>
     loanManagementController.updateLoan(req, res, next)
 );
 router.get(
   "/applications",
-  authenticateAdmin,
+  authenticateAdmin,authorizeRole(["admin"]),
   (req: Request, res: Response, next: NextFunction) =>
     applicationManagementControlelr.getApplications(req, res, next)
 );
 
 router.get(
   "/application/:applicationId",
-  authenticateAdmin,
+  authenticateAdmin,authorizeRole(["admin"]),
   (req: Request, res: Response, next: NextFunction) =>
     applicationManagementControlelr.getApplication(req, res, next)
 );
 
 router.patch(
   "/verify-application/:applicationId",
-  authenticateAdmin,
+  authenticateAdmin,authorizeRole(["admin"]),
   (req: Request, res: Response, next: NextFunction) =>
     applicationManagementControlelr.verifyApplication(req, res, next)
 );
 
 router.get(
   "/transactions",
-  authenticateAdmin,
+  authenticateAdmin,authorizeRole(["admin"]),
   (req: Request, res: Response, next: NextFunction) => {
     capitalAndTransaction.getTransactions(req, res, next);
   }
@@ -145,14 +145,14 @@ router.get(
 
 router.post(
   "/add-capital",
-  authenticateAdmin,
+  authenticateAdmin,authorizeRole(["admin"]),
   (req: Request, res: Response, next: NextFunction) => {
     capitalAndTransaction.addCapital(req, res, next);
   }
 );
 router.get(
   "/get-capital",
-  authenticateAdmin,
+  authenticateAdmin,authorizeRole(["admin"]),
   (req: Request, res: Response, next: NextFunction) => {
     capitalAndTransaction.getcapital(req, res, next);
   }
@@ -160,7 +160,7 @@ router.get(
 
 router.get(
   "/get-userloan",
-  // authenticateAdmin,
+  // authenticateAdmin,authorizeRole(["admin"]),
   (req: Request, res: Response, next: NextFunction) => {
     userLoanManagementController.getUserLoans(req, res, next);
   }
@@ -168,7 +168,7 @@ router.get(
 
 router.get(
   "/user-loan/emis/:userLoanId",
-  authenticateAdmin,
+  authenticateAdmin,authorizeRole(["admin"]),
   (req: Request, res: Response, next: NextFunction) => {
     userLoanManagementController.getUserLoanEmis(req, res, next);
   }
@@ -176,14 +176,14 @@ router.get(
 
 router.get(
   "/user/user-loans/:userId",
-  authenticateAdmin,
+  authenticateAdmin,authorizeRole(["admin"]),
   (req: Request, res: Response, next: NextFunction) => {
     userLoanManagementController.getUserLoansOfSingleUser(req, res, next);
   }
 );
 router.post (
   "/create-notification",
-  authenticateAdmin,
+  authenticateAdmin,authorizeRole(["admin"]),
   (req: Request, res: Response, next: NextFunction) => {
     notificationController.createNotification(req, res, next);
   }
@@ -191,7 +191,7 @@ router.post (
 
 router.get(
   "/all-chats",
-  authenticateAdmin,
+  authenticateAdmin,authorizeRole(["admin"]),
   (req: Request, res: Response, next: NextFunction) => {
   adminChatController.getAllChats(req, res, next);
   }
@@ -199,7 +199,7 @@ router.get(
 
 router.post(
   "/send-message",
-  authenticateAdmin,
+  authenticateAdmin,authorizeRole(["admin"]),
   (req: Request, res: Response, next: NextFunction) => {
     adminChatController.sendMessage(req, res, next);
   }
@@ -207,7 +207,7 @@ router.post(
 
 router.get(
   "/get-chat/:userId",
-  authenticateAdmin,
+  authenticateAdmin,authorizeRole(["admin"]),
   (req: Request, res: Response, next: NextFunction) => {
     adminChatController.getOrCreateChat(req, res, next);
   }
@@ -216,7 +216,7 @@ router.get(
 
 router.get(
   "/dashboard/get-totals",
-  authenticateAdmin,
+  authenticateAdmin,authorizeRole(["admin"]),
 
   (req: Request, res: Response, next: NextFunction) => {
     dashboardController.getTotals(req, res, next);
@@ -225,7 +225,7 @@ router.get(
 
 router.get(
   "/dashboard/application-chart/:timeFrame",
-  authenticateAdmin,
+  authenticateAdmin,authorizeRole(["admin"]),
 
   (req: Request, res: Response, next: NextFunction) => {
     dashboardController.applicationChart(req, res, next);
@@ -233,7 +233,7 @@ router.get(
 );
 router.get(
   "/dashboard/transaction-chart/:timeFrame",
-  authenticateAdmin,
+  authenticateAdmin,authorizeRole(["admin"]),
 
   (req: Request, res: Response, next: NextFunction) => {
     dashboardController.transactionChart(req, res, next);

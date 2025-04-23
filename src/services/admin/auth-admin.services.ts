@@ -48,8 +48,8 @@ export class AuthAdminService implements IAuthAdminService {
         STATUS_CODES.UNAUTHORIZED
       );
     }
-    const accessToken = this._jwtService.generateAccessToken(adminData._id);
-    const refreshToken = this._jwtService.generateRefreshToken(adminData._id);
+    const accessToken = this._jwtService.generateAccessToken(adminData._id,"admin");
+    const refreshToken = this._jwtService.generateRefreshToken(adminData._id,"admin");
 
     return { accessToken, refreshToken };
   }
@@ -62,6 +62,6 @@ export class AuthAdminService implements IAuthAdminService {
     if (!userId) {
       throw new CustomError("refresh token is not valid", 400);
     }
-    return this._jwtService.generateAccessToken(userId);
+    return this._jwtService.generateAccessToken(userId,"admin");
   }
 }

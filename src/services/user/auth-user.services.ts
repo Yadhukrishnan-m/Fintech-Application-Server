@@ -119,8 +119,8 @@ export class AuthUserService implements IAuthUserService {
       );
     }
 
-    const accessToken = this._jwtService.generateAccessToken(userData._id);
-    const refreshToken = this._jwtService.generateRefreshToken(userData._id);
+    const accessToken = this._jwtService.generateAccessToken(userData._id,"user");
+    const refreshToken = this._jwtService.generateRefreshToken(userData._id,"user");
 
     return { accessToken, refreshToken };
   }
@@ -132,7 +132,7 @@ export class AuthUserService implements IAuthUserService {
     if (!userId) {
       throw new CustomError("refresh token is not valid", 400);
     }
-    return this._jwtService.generateAccessToken(userId);
+    return this._jwtService.generateAccessToken(userId,"user");
   }
   async googleLogin(
     googleToken: string
@@ -160,8 +160,8 @@ export class AuthUserService implements IAuthUserService {
       user = await this._userRepository.create(userModel);
     }
 
-    const accessToken = this._jwtService.generateAccessToken(user._id);
-    const refreshToken = this._jwtService.generateRefreshToken(user._id);
+    const accessToken = this._jwtService.generateAccessToken(user._id,"user");
+    const refreshToken = this._jwtService.generateRefreshToken(user._id,"user");
 
     return { accessToken, refreshToken };
   }
@@ -174,7 +174,7 @@ export class AuthUserService implements IAuthUserService {
         STATUS_CODES.NOT_FOUND
       );
     }
-    const token = this._jwtService.generateAccessToken(email);
+    const token = this._jwtService.generateAccessToken(email,"user");
     const resetLink = process.env.FRONTEND_URI + "/reset-password/" + token;
     const content =
       this._emailService.generateResetPasswordEmailContent(resetLink);

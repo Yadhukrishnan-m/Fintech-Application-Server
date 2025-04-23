@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
 interface AuthenticatedRequest extends Request {
-  adminId?: string;
+  userId?: string;
 }
 const authenticateAdmin = (
   req: AuthenticatedRequest,
@@ -22,7 +22,7 @@ const authenticateAdmin = (
       process.env.ACCESS_TOKEN_SECRET as string
     ) as JwtPayload;
 
-    req.adminId = decoded._id._id || decoded._id;
+    req.userId = decoded._id._id || decoded._id;
  
     
 
