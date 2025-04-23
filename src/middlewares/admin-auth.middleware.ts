@@ -26,6 +26,7 @@ const authenticateAdmin = (
     req.userId = decoded._id._id || decoded._id;
  
      req.role = decoded.role;
+console.log("the role in authmidleware is "+req.role);
 
     // console.log('userid is '+req.userId);
 

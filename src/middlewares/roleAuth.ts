@@ -10,7 +10,7 @@ interface AuthenticatedRequest extends Request {
 export const authorizeRole = (allowedRoles: string[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const user = (req as AuthenticatedRequest);
-    console.log(user);
+    console.log("the role is "+user);
     
 
     if (!user || !allowedRoles.includes(user.role)) {
