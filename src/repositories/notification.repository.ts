@@ -69,7 +69,7 @@ export class NotificationRepository
         const objectId = new mongoose.Types.ObjectId(userId);
     
        return await NotificationModel.countDocuments({
-         $or: [{ type: "global" }, { userId: objectId }],
+         $or: [ { userId: objectId }],
        });
   }
 }
