@@ -15,10 +15,13 @@ import { IUserRepository } from "../../interfaces/repositories/user.repository.i
 import { IApplicationRepository } from "../../interfaces/repositories/application.repository.interface";
 import { LoanApplicationModelMapper } from "../../utils/mappers/application-mapper";
 import { IApplication, IApplicationPopulated } from "../../models/application.model";
+import customers from "razorpay/dist/types/customers";
 @injectable()
 export class ApplicationService implements IApplicationService {
   constructor(
     @inject(TYPES.LoanRepository) private _loanRepository: ILoanRepository,
+        @inject(TYPES.UserLoanRepository) private _userLoanRepository: ILoanRepository,
+
     @inject(TYPES.ApplicationRepository)
     private _applicationRepository: IApplicationRepository,
     @inject(TYPES.UserRepository) private _userRepository: IUserRepository,
@@ -35,7 +38,7 @@ export class ApplicationService implements IApplicationService {
       applicationData;
       
       
-
+   
     if (!loanId || !amount || !tenure) {
       throw new CustomError(MESSAGES.BAD_REQUEST, STATUS_CODES.BAD_REQUEST);
     }
