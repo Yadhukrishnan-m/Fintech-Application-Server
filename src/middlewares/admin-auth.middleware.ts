@@ -3,7 +3,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 
 interface AuthenticatedRequest extends Request {
   userId?: string;
-  role?:string;
+  role?: string;
 }
 const authenticateAdmin = (
   req: AuthenticatedRequest,
@@ -24,11 +24,8 @@ const authenticateAdmin = (
     ) as JwtPayload;
 
     req.userId = decoded._id._id || decoded._id;
- 
-     req.role = decoded.role;
-console.log("the role in authmidleware is "+req.role);
 
-    // console.log('userid is '+req.userId);
+    req.role = decoded.role;
 
     next();
   } catch (error) {
