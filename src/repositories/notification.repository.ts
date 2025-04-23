@@ -68,8 +68,7 @@ export class NotificationRepository
   async totalNotifications(userId: string): Promise<number> {
         const objectId = new mongoose.Types.ObjectId(userId);
     
-       return await NotificationModel.countDocuments({
-         $or: [ { userId: objectId }],
-       });
+       return await NotificationModel.countDocuments(
+          { userId: objectId });
   }
 }
