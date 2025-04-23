@@ -3,6 +3,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 
 interface AuthenticatedRequest extends Request {
   userId?: string;
+  role?:string;
 }
 const authenticateUser = (
   req: AuthenticatedRequest,
@@ -22,8 +23,8 @@ const authenticateUser = (
       process.env.ACCESS_TOKEN_SECRET as string
     ) as JwtPayload;
   
-    
     req.userId = decoded._id._id ||decoded._id; 
+     req.role = decoded.role;
     
     // console.log('userid is '+req.userId);
     

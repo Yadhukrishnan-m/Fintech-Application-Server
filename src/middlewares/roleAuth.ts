@@ -14,7 +14,7 @@ export const authorizeRole = (allowedRoles: string[]) => {
     if (!user || !allowedRoles.includes(user.role)) {
       console.log("role not allowed");
       res.status(STATUS_CODES.FORBIDDEN).json({
-        message: MESSAGES.BAD_REQUEST,
+        message: "Role Not Accepted",
         userRole: user ? user.role : "None",
       });
       return;
