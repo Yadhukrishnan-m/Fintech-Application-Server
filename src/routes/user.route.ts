@@ -87,7 +87,7 @@ router.patch(
 );
 
 router.put(
-  "update-profile-details",
+  "/update-profile-details",
   authenticateUser,
   authorizeRole(["user"]),
   (req: Request, res: Response, next: NextFunction) =>
