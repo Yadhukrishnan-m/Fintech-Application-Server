@@ -14,14 +14,13 @@ export class NotificationRepository
   }
   async getNotifications(
     userId: string,
-    page: number,
+    skip: number, // this is already calculated in the service
     limit: number
   ): Promise<{
     notifications: (INotification & { isRead: boolean })[];
     totalPages: number;
   }> {
     const objectId = new mongoose.Types.ObjectId(userId);
-    const skip = (page - 1) * limit;
 
     const result = await NotificationModel.aggregate([
       {
@@ -73,7 +72,10 @@ export class NotificationRepository
     const totalCount = result[0]?.count[0]?.total || 0;
     const totalPages = Math.ceil(totalCount / limit);
 
-    return { notifications, totalPages };
+    return {
+      notifications,
+      totalPages,
+    };
   }
 
   async getUserNotificationsForRead(userId: string): Promise<INotification[]> {

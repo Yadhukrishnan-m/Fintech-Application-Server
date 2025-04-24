@@ -5,8 +5,8 @@ import { IReadStatus } from "../../models/notification-read.modal";
 export interface INotificationRepository extends IBaseRepository<INotification> {
   getNotifications(
     userId: string,
-    page: number,
-    limit: number
+    skip: number,
+    pageSize: number
   ): Promise<{
     notifications: (INotification & { isRead: boolean })[];
     totalPages: number;
