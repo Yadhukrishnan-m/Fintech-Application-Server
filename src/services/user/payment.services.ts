@@ -276,6 +276,11 @@ export class PaymentService implements IPaymentService {
     await this._userRepository.updateById(userId, {
       finscore: updatedFinscore,
     });
+    if (nextEmiNumber === tenure) {
+      await this._userLoanRepository.updateById(userLoanId, {
+        status: "closed",
+      });
+    }
 
        const redisKey = `payment_lock_${userLoan._id}_${userId}`;
 

@@ -18,6 +18,7 @@ export interface IUserLoan extends Document {
   appliedDetails: string;
   transaction: mongoose.Types.ObjectId[]; // References to transactions
   createdAt: Date;
+  status: "running" | "closed";
   // nextDueDate: Date;
 }
 
@@ -28,12 +29,13 @@ export interface IUserLoanPopulated {
   amount: number;
   interest: number;
   duePenalty: number;
-  userLoanId:string;
+  userLoanId: string;
   tenure: number;
   gracePeriod: number;
   appliedDetails: string;
   transaction: ITransaction[];
   createdAt: Date;
+  status: "running" | "closed";
   // nextDueDate: Date;
 }
 
@@ -60,8 +62,13 @@ const UserLoanSchema = new Schema<IUserLoan>(
     interest: { type: Number, required: true },
     duePenalty: { type: Number, required: true },
     tenure: { type: Number, required: true },
-    // nextDueDate: { type: Date, required: true },
+    status: {
+      type: String,
+      enum: ["running", "closed"],
+      default: "running",
+    },
   },
+
   { timestamps: true }
 );
 
