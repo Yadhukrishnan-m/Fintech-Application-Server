@@ -86,7 +86,7 @@ router.patch(
     authUserController.changePassword(req, res, next)
 );
 
-router.put(
+router.patch(
   "/update-profile-details",
   authenticateUser,
   authorizeRole(["user"]),
