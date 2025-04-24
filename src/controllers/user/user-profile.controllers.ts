@@ -72,22 +72,47 @@ export class ProfileController {
     }
   }
 
-  async contactUs(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+  async editProfile(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
-      
+      const { userId } = req as AuthenticatedRequest;
+       if (!userId) {
+         throw new CustomError(
+           MESSAGES.INVALID_CREDENTIALS,
+           STATUS_CODES.UNAUTHORIZED
+         );
+       }
 
-     const { firstName, lastName, email, phone, message } = req.body;
-     await this._profileService.contactUs(
-       firstName,
-       lastName,
-       email,
-       phone,
-       message
-     );
-   res
-     .status(STATUS_CODES.CREATED)
-     .json({ success: true, message: MESSAGES.CREATED });
-     
+      this._profileService.editProfile(userId,req.body)
+
+      res
+        .status(STATUS_CODES.CREATED)
+        .json({ success: true, message: MESSAGES.CREATED});
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async contactUs(
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const { firstName, lastName, email, phone, message } = req.body;
+      await this._profileService.contactUs(
+        firstName,
+        lastName,
+        email,
+        phone,
+        message
+      );
+      res
+        .status(STATUS_CODES.CREATED)
+        .json({ success: true, message: MESSAGES.CREATED });
     } catch (error) {
       next(error);
     }

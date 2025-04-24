@@ -85,6 +85,14 @@ router.patch(
   (req: Request, res: Response, next: NextFunction) =>
     authUserController.changePassword(req, res, next)
 );
+
+router.put(
+  "update-profile-details",
+  authenticateUser,
+  authorizeRole(["user"]),
+  (req: Request, res: Response, next: NextFunction) =>
+    profileController.editProfile(req, res, next)
+);
 router.post("/logout", (req: Request, res: Response, next: NextFunction) =>
   authUserController.logout(req, res, next)
 );

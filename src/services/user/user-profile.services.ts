@@ -76,6 +76,14 @@ export class ProfileService implements IProfileService {
     );
   }
 
+
+    async editProfile(
+    userId: string,
+    userData:IUser
+  ): Promise<void> {
+    const updatedDate = await this._userRepository.updateById(userId, userData);
+  }
+
   async contactUs(
     firstName: string,
     lastName: string,

@@ -53,6 +53,7 @@ export class AuthUserController {
       next(error);
     }
   }
+
   async login(req: Request, res: Response, next: NextFunction) {
     try {
       const loginCredential: LoginDto = req.body;
@@ -131,12 +132,12 @@ export class AuthUserController {
   async changePassword(req: Request, res: Response, next: NextFunction) {
     try {
       const { currentPassword, newPassword } = req.body;
-        const { userId } = req as AuthenticatedRequest;
-        await this._authUserService.changePassword(
-          currentPassword,
-          newPassword,
-          userId
-        );
+      const { userId } = req as AuthenticatedRequest;
+      await this._authUserService.changePassword(
+        currentPassword,
+        newPassword,
+        userId
+      );
       res
         .status(STATUS_CODES.CREATED)
         .json({ success: true, message: MESSAGES.PASSWORD_RESET_SUCCESS });
@@ -144,6 +145,8 @@ export class AuthUserController {
       next(error);
     }
   }
+
+
   async logout(req: Request, res: Response, next: NextFunction) {
     try {
       res.clearCookie("userRefreshToken", {

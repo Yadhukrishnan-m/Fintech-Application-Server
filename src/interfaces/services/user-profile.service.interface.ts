@@ -13,4 +13,5 @@ export interface IProfileService {
     phone: string,
     message: string
   ): Promise<void>;
+  editProfile(userId: string, userData: IUser): Promise<void>;
 }
