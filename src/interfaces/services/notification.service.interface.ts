@@ -9,8 +9,11 @@ export interface INotificationService {
     userId: string | null
   ): Promise<void>;
   getNotifications(
-    userId: string
-  ): Promise<(INotification & { isRead: boolean })[]>;
+    userId: string,page:number
+  ): Promise<{
+    notifications: (INotification & { isRead: boolean })[];
+    totalPages: number;
+  } >;
   markUserNotificationsAsRead(userId: string): Promise<void>;
   totalUnreadNotifications(userId: string): Promise<number>;
 }

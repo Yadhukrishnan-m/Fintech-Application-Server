@@ -12,12 +12,18 @@ export class NotificationRepository
   constructor() {
     super(NotificationModel);
   }
-  async getUserNotifications(
-    userId: string
-  ): Promise<(INotification & { isRead: boolean })[]> {
+  async getNotifications(
+    userId: string,
+    page: number,
+    limit: number
+  ): Promise<{
+    notifications: (INotification & { isRead: boolean })[];
+    totalPages: number;
+  }> {
     const objectId = new mongoose.Types.ObjectId(userId);
+    const skip = (page - 1) * limit;
 
-    return await NotificationModel.aggregate([
+    const result = await NotificationModel.aggregate([
       {
         $match: {
           $or: [{ type: "global" }, { userId: objectId }],
@@ -48,14 +54,26 @@ export class NotificationRepository
         },
       },
       {
-        $sort: { createdAt: -1 }, // Sorting: Latest notifications first
+        $sort: { createdAt: -1 },
       },
       {
         $project: {
           readStatus: 0,
         },
       },
+      {
+        $facet: {
+          data: [{ $skip: skip }, { $limit: limit }],
+          count: [{ $count: "total" }],
+        },
+      },
     ]);
+
+    const notifications = result[0]?.data || [];
+    const totalCount = result[0]?.count[0]?.total || 0;
+    const totalPages = Math.ceil(totalCount / limit);
+
+    return { notifications, totalPages };
   }
 
   async getUserNotificationsForRead(userId: string): Promise<INotification[]> {
@@ -66,10 +84,10 @@ export class NotificationRepository
     }).select("_id");
   }
   async totalNotifications(userId: string): Promise<number> {
-        const objectId = new mongoose.Types.ObjectId(userId);
-    
-       return await NotificationModel.countDocuments({
-         $or: [{ type: "global" }, { userId: objectId }],
-       });
+    const objectId = new mongoose.Types.ObjectId(userId);
+
+    return await NotificationModel.countDocuments({
+      $or: [{ type: "global" }, { userId: objectId }],
+    });
   }
 }

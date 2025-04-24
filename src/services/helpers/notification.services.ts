@@ -50,14 +50,13 @@ export class NotificationService implements INotificationService {
     await this._notificationRepository.create(notification);
 
     const io = getIO();
-     console.log("All Socket Mappings:", Array.from(userSocketMap.entries()));
+    console.log("All Socket Mappings:", Array.from(userSocketMap.entries()));
 
     if (userMongoseId?._id) {
       const userSocketId = getUserSocket(userMongoseId._id.toString());
-        console.log(userSocketId);
-     
+      console.log(userSocketId);
+
       if (userSocketId) {
-        
         io.to(userSocketId).emit("new_notification", notification);
       }
     } else {
@@ -66,9 +65,17 @@ export class NotificationService implements INotificationService {
   }
 
   async getNotifications(
-    userId: string
-  ): Promise<(INotification & { isRead: boolean })[]> {
-    return await this._notificationRepository.getUserNotifications(userId);
+    userId: string,
+    page: number
+  ): Promise<{
+    notifications: (INotification & { isRead: boolean })[];
+    totalPages: number;
+  }> {
+    return await this._notificationRepository.getNotifications(
+      userId,
+      page,
+      10
+    );
   }
 
   async markUserNotificationsAsRead(userId: string): Promise<void> {
@@ -98,10 +105,10 @@ export class NotificationService implements INotificationService {
   }
 
   async totalUnreadNotifications(userId: string): Promise<number> {
-    
-const totalreaded=await this._notificationReadRepository.totalReaded(userId)
-const total=await this._notificationRepository.totalNotifications(userId)
-return (total-totalreaded)
-   
+    const totalreaded = await this._notificationReadRepository.totalReaded(
+      userId
+    );
+    const total = await this._notificationRepository.totalNotifications(userId);
+    return total - totalreaded;
   }
 }

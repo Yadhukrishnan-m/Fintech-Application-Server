@@ -20,14 +20,17 @@ export class UserNotificationController {
   async getNotification(req: Request, res: Response, next: NextFunction) {
     try {
       const { userId } = req as AuthenticatedRequest;
+      const { page = 1,  } = req.query;
 
-      const notifications = await this._notificationService.getNotifications(
-        userId
+      const {notifications,totalPages} = await this._notificationService.getNotifications(
+        userId,
+      Number(page)
       );
       res.status(STATUS_CODES.CREATED).json({
         success: true,
         message: MESSAGES.CREATED,
         notifications,
+        totalPages,
         userId,
       });
     } catch (error) {
