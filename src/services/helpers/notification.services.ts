@@ -71,15 +71,8 @@ export class NotificationService implements INotificationService {
     notifications: (INotification & { isRead: boolean })[];
     totalPages: number;
   }> {
-     const pageSize = 5; 
+     const pageSize = 10; 
      const skip = (page - 1) * pageSize;
-     console.log( await this._notificationRepository.getNotifications(
-      userId,
-      skip,
-     pageSize
-    ));
-    console.log("page ad skip "+page,skip);
-    
      
     return await this._notificationRepository.getNotifications(
       userId,
