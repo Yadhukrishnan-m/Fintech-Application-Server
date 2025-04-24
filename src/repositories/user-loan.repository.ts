@@ -85,15 +85,24 @@ export class UserLoanRepository
         $gte: startDate,
         $lte: endDate,
       },
-    })
-      // .populate({
-      //   path: "loanId",
-      //   select: "loanId name",
-      // })
-      // .populate({
-      //   path: "userId",
-      //   select: "customerId name email",
-      // })
-      // .lean();
+    });
+    // .populate({
+    //   path: "loanId",
+    //   select: "loanId name",
+    // })
+    // .populate({
+    //   path: "userId",
+    //   select: "customerId name email",
+    // })
+    // .lean();
+  }
+
+  async getRunningLoans(userId: string): Promise<IUserLoan[]> {
+    return await UserLoanModel.find({
+      userId: userId,
+      
+      status: "running",
+    });
+      
   }
 }

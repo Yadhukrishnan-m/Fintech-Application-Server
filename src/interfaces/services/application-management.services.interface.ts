@@ -10,7 +10,11 @@ export interface IApplicationManagementService {
     sortBy?: string,
     filter?: string
   ): Promise<{ loans: IApplication[]; totalPages: number }>;
-  getApplication(applicationId: string): Promise<IApplicationPopulated>;
+  getApplication(
+    applicationId: string
+  ): Promise<
+    IApplicationPopulated & { averageMonthlyEmi: number; monthlyIncome: number }
+  >;
   verifyApplication(
     applicationId: string,
     statusAndMessage: verifyApplicationDTO

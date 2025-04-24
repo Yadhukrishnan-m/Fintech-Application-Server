@@ -23,6 +23,7 @@ export const TYPES = {
   InterestCalculator: Symbol.for("InterestCalculator"),
   EmiCalculator: Symbol.for("EmiCalculator"),
   RazorpayService: Symbol.for("RazorpayService"),
+  AverageMontlyEmi:Symbol.for("AverageMontlyEmi"),
   // common service
   NotificationService: Symbol.for("NotificationService"),
   EmiReminderService: Symbol.for("EmiReminderService"),

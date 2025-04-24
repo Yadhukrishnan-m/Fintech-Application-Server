@@ -24,6 +24,8 @@ import { INotification } from "../../models/notification.model";
 import { INotificationRepository } from "../../interfaces/repositories/notification.repository.interface";
 import { getIO, getUserSocket } from "../../config/socket";
 import { stat } from "fs";
+import { IUserRepository } from "../../interfaces/repositories/user.repository.interface";
+import { IAverageMontlyEmi } from "../../interfaces/helpers/averageMontlyEmi.service.interface";
 
 @injectable()
 export class ApplicationManagementService
@@ -41,7 +43,11 @@ export class ApplicationManagementService
     @inject(TYPES.CapitalRepository)
     private _capitalRepository: ICapitalRepository,
     @inject(TYPES.NotificationRepository)
-    private _notificationRepository: INotificationRepository
+    private _notificationRepository: INotificationRepository,
+    @inject(TYPES.UserRepository)
+    private _userRepository: IUserRepository,
+    @inject(TYPES.AverageMontlyEmi)
+    private _averageMonthlyEmi: IAverageMontlyEmi
   ) {}
   async getApplications(
     page: number,
@@ -102,40 +108,47 @@ export class ApplicationManagementService
     };
   }
 
-  async getApplication(applicationId: string): Promise<IApplicationPopulated> {
+  async getApplication(
+    applicationId: string
+  ): Promise<
+    IApplicationPopulated & { averageMonthlyEmi: number; monthlyIncome: number }
+  > {
     const applicationData =
       await this._applicationRepository.applicationDetails(applicationId);
-    if (!applicationData) {
+    if (!applicationData || !applicationData.userId) {
       throw new CustomError(MESSAGES.NOT_FOUND, STATUS_CODES.NOT_FOUND);
     }
-    return applicationData;
+    const [user, averageMonthlyEmi] = await Promise.all([
+      this._userRepository.findById(applicationData.userId._id),
+      this._averageMonthlyEmi.findAverageEmi(applicationData.userId._id),
+    ]);
+    if (!applicationData || !user || !user.income) {
+      throw new CustomError(MESSAGES.NOT_FOUND, STATUS_CODES.NOT_FOUND);
+    }
+    return {
+      ...applicationData,
+      averageMonthlyEmi,
+      monthlyIncome: Number((user.income/12).toFixed(2)),
+    };
   }
-
 
   async verifyApplication(
     applicationId: string,
     statusAndMessage: verifyApplicationDTO
   ): Promise<void> {
-
-    const application=await this._applicationRepository.findById(applicationId);
+    const application = await this._applicationRepository.findById(
+      applicationId
+    );
     if (!application) {
-      throw new CustomError(MESSAGES.NOT_FOUND,STATUS_CODES.NOT_FOUND)
+      throw new CustomError(MESSAGES.NOT_FOUND, STATUS_CODES.NOT_FOUND);
     }
-          const capitalAmount = await this._capitalRepository.findOne({});
-          if (
-            Number(capitalAmount?.availableBalance) <
-            Number(application.amount)
-
-            && statusAndMessage.status==='approved'
-          ) {
-            throw new CustomError(
-              "Insufficient Capital",
-              STATUS_CODES.BAD_REQUEST
-            );
-          }
-
-
-
+    const capitalAmount = await this._capitalRepository.findOne({});
+    if (
+      Number(capitalAmount?.availableBalance) < Number(application.amount) &&
+      statusAndMessage.status === "approved"
+    ) {
+      throw new CustomError("Insufficient Capital", STATUS_CODES.BAD_REQUEST);
+    }
 
     const applicationData = await this._applicationRepository.updateById(
       applicationId,

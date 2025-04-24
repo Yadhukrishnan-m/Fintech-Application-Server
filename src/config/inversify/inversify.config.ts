@@ -70,6 +70,7 @@ import { AdminChatController } from "../../controllers/admin/adminChat.controlle
 import { DashboardController } from "../../controllers/admin/dashboard.controllers";
 import { DashboardService } from "../../services/admin/dashboard.services";
 import { ReportService } from "../../services/helpers/reportService";
+import { AverageMontlyEmi } from "../../services/helpers/averageMonthlyEmi.services";
 
 // Create the Inversify container
 const container = new Container();
@@ -112,6 +113,8 @@ container.bind<EmailService>(TYPES.EmailService).to(EmailService);
 container.bind<JwtService>(TYPES.JwtService).to(JwtService);
 container.bind<UploadToS3>(TYPES.UploadToS3).to(UploadToS3);
 container.bind<EmiCalculator>(TYPES.EmiCalculator).to(EmiCalculator);
+container.bind<AverageMontlyEmi>(TYPES.AverageMontlyEmi).to(AverageMontlyEmi);
+
 container
   .bind<InterestCalculator>(TYPES.InterestCalculator)
   .to(InterestCalculator);

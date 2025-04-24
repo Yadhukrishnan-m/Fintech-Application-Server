@@ -135,9 +135,21 @@ const totalPenalty = emiSchedule.reduce(
 if (!user) {
     continue
 }
-
-    const content=this._emailService.generateOverdueEmiEmailContent(user,userLoan,overdueCount,totalPenalty)        
-              await this._emailService.sendEmail(user.email,'Warning! Pending  Emi Not Paid',content)           
+if (overdueCount>0) {
+   const content = this._emailService.generateOverdueEmiEmailContent(
+     user,
+     userLoan,
+     overdueCount,
+     totalPenalty
+   );
+   await this._emailService.sendEmail(
+     user.email,
+     "Warning! Pending  Emi Not Paid",
+     content
+   );
+  
+}
+              
 }
  }
   } 

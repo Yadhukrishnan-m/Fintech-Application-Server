@@ -23,5 +23,6 @@ export interface IUserLoanRepository extends IBaseRepository<IUserLoan> {
       startDate: Date,
       endDate: Date
     ): Promise<IUserLoan[]>
+    getRunningLoans(userId: string): Promise<IUserLoan[]>
 }
  
