@@ -61,14 +61,15 @@ export class NotificationRepository
   async getUserNotificationsForRead(userId: string): Promise<INotification[]> {
     const objectId = new mongoose.Types.ObjectId(userId);
 
-    return await NotificationModel.find(
-       { userId: objectId },
-    ).select("_id");
+    return await NotificationModel.find({
+      $or: [{ type: "global" }, { userId: objectId }],
+    }).select("_id");
   }
   async totalNotifications(userId: string): Promise<number> {
         const objectId = new mongoose.Types.ObjectId(userId);
     
-       return await NotificationModel.countDocuments(
-          { userId: objectId });
+       return await NotificationModel.countDocuments({
+         $or: [{ type: "global" }, { userId: objectId }],
+       });
   }
 }
