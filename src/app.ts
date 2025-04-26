@@ -18,7 +18,7 @@ import path from 'path';
 app.use(
   cors({
     origin: process.env.FRONTEND_URI,
-    credentials: false,
+    credentials: true,
   })
 );
 container.get<EmiReminderService>(TYPES.EmiReminderService);
