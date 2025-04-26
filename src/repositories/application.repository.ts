@@ -18,6 +18,8 @@ export class ApplicationRepository
     return await ApplicationModel.countDocuments(query);
   }
 
+  
+
   async getApplications(
     query: any,
     sortQuery: any,

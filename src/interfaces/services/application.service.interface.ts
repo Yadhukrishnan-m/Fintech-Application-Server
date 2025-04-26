@@ -16,5 +16,9 @@ export interface IApplicationService {
     currentPage: number;
     totalApplications: number;
   }>;
-   getApplicationDetails(userId:string,applicationId: string): Promise<IApplicationPopulated>
+  getApplicationDetails(
+    userId: string,
+    applicationId: string
+  ): Promise<IApplicationPopulated>;
+  cancelApplication(applicationId: string): Promise<void>;
 }

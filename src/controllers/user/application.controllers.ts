@@ -26,7 +26,6 @@ export class ApplicationController {
   async createApplication(req: Request, res: Response, next: NextFunction) {
     try {
       const { loanId, amount, tenure, accountNumber, ifscCode } = req.body;
-      
 
       const { userId } = req as AuthenticatedRequest;
       const applicationData: ApplicationDto = {
@@ -72,7 +71,6 @@ export class ApplicationController {
     }
   }
 
-
   async getApplicationDetails(req: Request, res: Response, next: NextFunction) {
     try {
       const { userId } = req as AuthenticatedRequest;
@@ -83,7 +81,24 @@ export class ApplicationController {
         applicationId
       );
 
-     
+      res.status(STATUS_CODES.CREATED).json({
+        message: MESSAGES.CREATED,
+        success: true,
+        application: application,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async cancelApplication(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { userId } = req as AuthenticatedRequest;
+      const { applicationId } = req.params;
+
+      const application = await this._applicationService.cancelApplication(
+        applicationId
+      );
 
       res.status(STATUS_CODES.CREATED).json({
         message: MESSAGES.CREATED,

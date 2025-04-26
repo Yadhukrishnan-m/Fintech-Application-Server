@@ -20,7 +20,8 @@ import customers from "razorpay/dist/types/customers";
 export class ApplicationService implements IApplicationService {
   constructor(
     @inject(TYPES.LoanRepository) private _loanRepository: ILoanRepository,
-        @inject(TYPES.UserLoanRepository) private _userLoanRepository: ILoanRepository,
+    @inject(TYPES.UserLoanRepository)
+    private _userLoanRepository: ILoanRepository,
 
     @inject(TYPES.ApplicationRepository)
     private _applicationRepository: IApplicationRepository,
@@ -36,9 +37,7 @@ export class ApplicationService implements IApplicationService {
   ): Promise<void> {
     const { loanId, amount, tenure, documents, accountNumber, ifscCode } =
       applicationData;
-      
-      
-   
+
     if (!loanId || !amount || !tenure) {
       throw new CustomError(MESSAGES.BAD_REQUEST, STATUS_CODES.BAD_REQUEST);
     }
@@ -52,18 +51,18 @@ export class ApplicationService implements IApplicationService {
       loanId
     );
 
-
-
     const userDetails: IUser | null = await this._userRepository.findById(
       userId
     );
     if (userDetails?.isBlacklisted) {
-      throw new CustomError(MESSAGES.BLACKLISTED,STATUS_CODES.BAD_REQUEST)
+      throw new CustomError(MESSAGES.BLACKLISTED, STATUS_CODES.BAD_REQUEST);
     }
-     if (!loanDetails?.isActive) {
-       throw new CustomError(MESSAGES.DEACTIVATED_LOAN, STATUS_CODES.BAD_REQUEST);
-     }
-
+    if (!loanDetails?.isActive) {
+      throw new CustomError(
+        MESSAGES.DEACTIVATED_LOAN,
+        STATUS_CODES.BAD_REQUEST
+      );
+    }
 
     if (
       !loanDetails ||
@@ -71,11 +70,8 @@ export class ApplicationService implements IApplicationService {
       !userDetails ||
       !userDetails.cibilScore ||
       !loanDetails.gracePeriod ||
-      userDetails.finscore==null
+      userDetails.finscore == null
     ) {
-      
-
-
       throw new CustomError(MESSAGES.NOT_FOUND, STATUS_CODES.NOT_FOUND);
     }
 
@@ -85,8 +81,6 @@ export class ApplicationService implements IApplicationService {
       tenure < loanDetails.minimumTenure ||
       tenure > loanDetails.maximumTenure
     ) {
-    
-      
       throw new CustomError(MESSAGES.BAD_REQUEST, STATUS_CODES.BAD_REQUEST);
     }
 
@@ -104,7 +98,7 @@ export class ApplicationService implements IApplicationService {
       loanId,
       amount,
       tenure,
-      gracePeriod:loanDetails.gracePeriod,
+      gracePeriod: loanDetails.gracePeriod,
       accountNumber,
       ifscCode,
     };
@@ -114,8 +108,7 @@ export class ApplicationService implements IApplicationService {
       userId,
       uploadedDocuments
     );
- 
-    
+
     await this._applicationRepository.create(newApplication);
   }
 
@@ -135,51 +128,60 @@ export class ApplicationService implements IApplicationService {
       {}
     );
     const totalPages = Math.ceil(totalApplications / pageSize);
-    const applications = await this._applicationRepository.getApplicationsByuserId(
-      { createdAt: -1 },
-      skip,
-      pageSize,userId
-    );
+    const applications =
+      await this._applicationRepository.getApplicationsByuserId(
+        { createdAt: -1 },
+        skip,
+        pageSize,
+        userId
+      );
     return {
-      applications:applications || [],
+      applications: applications || [],
       totalPages,
       currentPage: page,
       totalApplications,
     };
   }
 
-  async getApplicationDetails(userId:string,applicationId: string): Promise<IApplicationPopulated> {
+  async getApplicationDetails(
+    userId: string,
+    applicationId: string
+  ): Promise<IApplicationPopulated> {
+    const applicationDetails: IApplicationPopulated | null =
+      await this._applicationRepository.applicationDetails(applicationId);
 
-   const applicationDetails :IApplicationPopulated | null= await this._applicationRepository.applicationDetails(
-     applicationId
-   );
-   
-   if (!applicationDetails) {
-    throw new CustomError(MESSAGES.NOT_FOUND,STATUS_CODES.NOT_FOUND)
-   }
-   if (applicationDetails.userId._id.toString()!==userId) {
-       throw new CustomError(MESSAGES.BAD_REQUEST, STATUS_CODES.BAD_REQUEST);
-   }
-      const expiresIn = process.env.URL_EXPIRY as unknown as number;
-      for (const document of applicationDetails.documents) {
-        const key = Object.keys(document)[0];
-        let signedUrl = await redisClient.get(document[key]);
-        if (!signedUrl) {
-          signedUrl= await this._uploadToS3.getSignedUrl(
+    if (!applicationDetails) {
+      throw new CustomError(MESSAGES.NOT_FOUND, STATUS_CODES.NOT_FOUND);
+    }
+    if (applicationDetails.userId._id.toString() !== userId) {
+      throw new CustomError(MESSAGES.BAD_REQUEST, STATUS_CODES.BAD_REQUEST);
+    }
+    const expiresIn = process.env.URL_EXPIRY as unknown as number;
+    for (const document of applicationDetails.documents) {
+      const key = Object.keys(document)[0];
+      let signedUrl = await redisClient.get(document[key]);
+      if (!signedUrl) {
+        signedUrl = await this._uploadToS3.getSignedUrl(
           document[key],
           expiresIn
         );
         await redisClient.set(document[key], signedUrl, {
           EX: 300,
         });
-        }
-        document[key] =signedUrl
       }
+      document[key] = signedUrl;
+    }
 
+    return applicationDetails;
+  }
 
-      
+  async cancelApplication(
+  
+    applicationId: string
+  ): Promise<void> {
     
-   
-return applicationDetails
+   await this._applicationRepository.updateById(applicationId,{status:"cancelled"})
+
+    
   }
 }

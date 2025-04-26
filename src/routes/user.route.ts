@@ -160,6 +160,15 @@ router.get(
 );
 
 router.get(
+  "/application/cancel-application/:applicationId",
+  authenticateUser,
+  authorizeRole(["user"]),
+  (req: Request, res: Response, next: NextFunction) => {
+    applicationController.cancelApplication(req, res, next);
+  }
+);
+
+router.get(
   "/user-loan/emis/:userLoanId",
   authenticateUser,authorizeRole(["user"]),
   (req: Request, res: Response, next: NextFunction) => {
