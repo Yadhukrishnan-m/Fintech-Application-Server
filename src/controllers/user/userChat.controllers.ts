@@ -51,7 +51,7 @@ export class UserChatController {
   async sendMessage(req: Request, res: Response, next: NextFunction) {
     try {
       const { userId } = req as AuthenticatedRequest;
-      const { chat_id, content } = req.body;
+      const { chat_id, content } = req.body.message;
       if (userId == undefined) {
         throw new CustomError(MESSAGES.NOT_FOUND, STATUS_CODES.NOT_FOUND);
       }
