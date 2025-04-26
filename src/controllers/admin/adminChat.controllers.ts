@@ -59,6 +59,7 @@ export class AdminChatController {
 
        const adminId = admin._id;
       const { chat_id, content } = req.body;
+      console.log('in admin',req.body)
       if (adminId == undefined) {
         throw new CustomError(MESSAGES.NOT_FOUND, STATUS_CODES.NOT_FOUND);
       }
