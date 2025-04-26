@@ -19,6 +19,8 @@ export class MessageRepository
   }
 
   async createMessage(data: Partial<IMessage>): Promise<IMessage> {
+    console.log("data in repository", data);
+    
     return await MessageModel.create(data);
   }
   async numberOfUnReaded(chat_id:string): Promise< number> {

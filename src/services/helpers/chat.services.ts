@@ -43,6 +43,7 @@ export class ChatService implements IChatService {
     senderModel: "User" | "Admin",
     content: string
   ): Promise<IMessage> {
+    console.log('content in service',content)
     const message = await this._messageRepository.create({
       chat_id: new Types.ObjectId(chatId),
       sender_id: new Types.ObjectId(senderId),
