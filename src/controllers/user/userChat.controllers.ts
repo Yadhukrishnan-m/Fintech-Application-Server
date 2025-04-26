@@ -55,7 +55,7 @@ export class UserChatController {
       if (userId == undefined) {
         throw new CustomError(MESSAGES.NOT_FOUND, STATUS_CODES.NOT_FOUND);
       }
-      console.log(req.body);
+      console.log(req.body.content);
       
 
       const messages = await this._chatService.sendMessage(
