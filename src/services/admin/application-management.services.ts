@@ -142,6 +142,12 @@ export class ApplicationManagementService
     if (!application) {
       throw new CustomError(MESSAGES.NOT_FOUND, STATUS_CODES.NOT_FOUND);
     }
+
+     if (application.status!=="pending") {
+       throw new CustomError(MESSAGES.BAD_REQUEST, STATUS_CODES.BAD_REQUEST);
+     }
+
+
     const capitalAmount = await this._capitalRepository.findOne({});
     if (
       Number(capitalAmount?.availableBalance) < Number(application.amount) &&
