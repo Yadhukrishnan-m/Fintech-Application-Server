@@ -101,7 +101,7 @@ export class ApplicationController {
       );
 
       res.status(STATUS_CODES.CREATED).json({
-        message: MESSAGES.CREATED,
+        message: "successfully cancelled",
         success: true,
         application: application,
       });

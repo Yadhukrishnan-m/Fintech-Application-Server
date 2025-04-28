@@ -161,8 +161,8 @@ router.get(
 
 router.get(
   "/application/cancel-application/:applicationId",
-  // authenticateUser,
-  // authorizeRole(["user"]),
+  authenticateUser,
+  authorizeRole(["user"]),
   (req: Request, res: Response, next: NextFunction) => {
     applicationController.cancelApplication(req, res, next);
   }
