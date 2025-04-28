@@ -179,7 +179,20 @@ export class ApplicationService implements IApplicationService {
   
     applicationId: string
   ): Promise<void> {
-    
+  
+    const application=await this._applicationRepository.findById(applicationId)
+
+    if (!application || !application.status ) {
+      throw new CustomError(MESSAGES.NOT_FOUND,STATUS_CODES.NOT_FOUND)
+    }
+
+    if (
+      !application ||
+      !application.status ||
+      application.status !== "pending"
+    ) {
+      throw new CustomError(MESSAGES.BAD_REQUEST, STATUS_CODES.BAD_REQUEST);
+    }
    await this._applicationRepository.updateById(applicationId,{status:"cancelled"})
 
     
