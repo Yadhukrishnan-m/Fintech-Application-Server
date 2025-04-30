@@ -36,6 +36,8 @@ export class PaymentController {
         totalAmount,
       });
     } catch (error) {
+      console.log(error);
+      
    
       next(error);
     }
