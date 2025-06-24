@@ -18,7 +18,6 @@ export const initializeSocket = (server: HttpServer) => {
 
     socket.on("register_user", (userId: string) => {
       userSocketMap.set(userId, socket.id);
-
       socket.join(userId);
     });
 
@@ -34,7 +33,6 @@ export const initializeSocket = (server: HttpServer) => {
       /**
        * 
        */
-
       io.to(roomId).emit("receiveMessage", {
         content: message,
         sender_id: userId,

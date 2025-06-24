@@ -49,7 +49,6 @@ export class AdminChatController {
       next(error);
     }
   }
-
   async sendMessage(req: Request, res: Response, next: NextFunction) {
     try {
        const admin = await this._adminrepository.findOne({});

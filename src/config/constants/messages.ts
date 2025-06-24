@@ -12,9 +12,10 @@ export const MESSAGES = {
   ACCOUNT_VERIFIED: "Account successfully verified.",
   ACCOUNT_NOT_VERIFIED: "Your account is not verified yet.",
   LOGOUT_SUCCESS: "Logged out successfully.",
- TRANSACTION_FAILED:'Transaction Failed',
- PAYMENT_IN_PROGRESS:'Payment already initiated for this loan by you. Please complete or cancel the previous payment.',
- PAYMENT_FAILED:'payment failed',
+  TRANSACTION_FAILED: "Transaction Failed",
+  PAYMENT_IN_PROGRESS:
+    "Payment already initiated for this loan by you. Please complete or cancel the previous payment.",
+  PAYMENT_FAILED: "payment failed",
   // Registration & Profile
   REGISTRATION_SUCCESS: "Registration successful.",
   REGISTRATION_FAILED: "Registration failed. Please try again.",
@@ -24,7 +25,8 @@ export const MESSAGES = {
   PASSWORD_RESET_SENT: "Password reset email sent.",
   PASSWORD_RESET_SUCCESS: "Password reset successful.",
   PASSWORD_RESET_FAILED: "Failed to reset password.",
-CREATED:'Created Successfully',
+  CREATED: "Created Successfully",
+
   // Notifications & Reminders
   EMAIL_VERIFICATION_SENT: "Verification email sent successfully.",
   EMAIL_VERIFICATION_SUCCESS: "Email successfully verified.",
@@ -36,14 +38,12 @@ CREATED:'Created Successfully',
   // DATA SENT
   DATA_SENT_SUCCESS: "Data sent successfully.",
   DATA_FETCH_SUCCESS: "Data fetched successfully.",
-ALREADY_EXISTS:'data alredy exist',
-UPDATE_SUCCESS:'updated Successfully',
+  ALREADY_EXISTS: "data alredy exist",
+  UPDATE_SUCCESS: "updated Successfully",
   SERVER_ERROR: "An unexpected error occurred.",
   BAD_REQUEST: "Invalid request. Please check the input data.",
   RESOURCE_NOT_FOUND: "Requested resource not found.",
   VALIDATION_ERROR: "Validation failed. Please check your input.",
-
-
-  BLACKLISTED:"Blacklisted user cant do this operation",
-  DEACTIVATED_LOAN:"This loan is deactivated"
+  BLACKLISTED: "Blacklisted user cant do this operation",
+  DEACTIVATED_LOAN: "This loan is deactivated",
 };
